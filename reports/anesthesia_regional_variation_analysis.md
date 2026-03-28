@@ -411,3 +411,415 @@ https://www5.cao.go.jp/keizai-shimon/kaigi/special/reform/mieruka/chiikisa/r04/0
 https://www.ssk.or.jp/tokeijoho/shinsatokei/index.html
 ```
 令和4年度の年度統計・月次データがZIP形式でダウンロード可能。
+
+---
+
+# English Translation
+
+---
+
+# Regional differences in anesthesia-related medical practices: Sensitivity analysis framework
+
+## Overview
+
+A framework that examines the question, "Are regional differences in treatment variations entirely explained by differences in assessment (insurance screening), or are there really regional differences in treatment?" using public data (SCR: age-sex-adjusted Standardized Receipt Occurrence Ratio) regarding anesthesia-related medical practices.
+
+---
+
+## 1. Usage data
+
+| Data | Source | Granularity | Year |
+|---|---|---|---|
+| SCR (by prefecture) | [Cabinet Office "Visualization" of regional differences](https://www5.cao.go.jp/keizai-shimon/kaigi/special/reform/mieruka/chiikisa/index.html) | 47 prefectures | FY2022 |
+| SCR (by secondary medical area) | Same as above | 335 secondary medical area | 2022 |
+| Examination statistics | [Payment fund](https://www.ssk.or.jp/tokeijoho/shinsatokei/index.html) | Monthly by prefecture | FY2020 |
+| Visualization report of examination differences | [Payment fund](https://www.ssk.or.jp/shinryohoshu/saikaisyou_torikumi/kashikarepo/) | By medical practice | Updated from time to time |
+
+---
+
+## 2. SCR regional differences in anesthesia-related codes (prefectural level R4 year)
+
+| Code | Name | Minimum | Maximum | Maximum/Minimum | CV(%) | Characteristics |
+|---|---|---:|---:|---:|---:|---|
+| L008 | Closed circulation general anesthesia | 64.0 | 126.2 | 2.0x | 16.3 | **Most stable**. Variation of less than 2 times |
+| L002 | Epidural | 35.4 | 233.4 | 6.6x | 44.7 | Large variation |
+| L004 | Spinal Anesthesia | 50.3 | 192.6 | 3.8x | 35.0 | Moderate Variability |
+| L005 | Lower extremity delivery anesthesia | 35.2 | 280.0 | 8.0x | 59.6 | Large variability |
+| L001 | Intravenous Anesthesia | 22.4 | 564.1 | 25.2x | 85.8 | Extreme Variability |
+| L009 | Anesthesia management fee 1 | 44.4 | 148.4 | 3.3x | 26.8 | Reflects specialist assignment |
+| L100 | Nerve Block | 35.1 | 226.8 | 6.5x | 45.6 | Reflects Pain Clinic Activities |
+| L104 | Trigger Point Injection | 48.2 | 246.9 | 5.1x | 36.4 | Reflects Pain Clinic Activities |
+
+### L008 (general anesthesia) SCR by prefecture (top/bottom 10)
+
+**High SCR (general anesthesia is common)**: Hokkaido (126.2), Tottori (125.8), Fukuoka (124.8), Saga (124.1), Tokyo (119.4), Kyoto (118.9), Toyama (112.7), Osaka (112.4), Kagoshima (111.2), Nara(110.1)
+
+**Low SCR (less general anesthesia)**: Gifu (64.0), Yamagata (66.2), Mie (69.9), Aomori (70.1), Aichi (77.0), Niigata (77.2), Iwate (80.7), Saitama (81.5), Fukushima (84.4), Ibaraki (86.0)
+
+---
+
+## 3. Sensitivity analysis framework
+
+### 3.1 Null hypothesis
+
+> **H0: All regional SCR differences in anesthesia-related medical practices are explained by inter-prefectural differences in insurance screening (assessment)**
+
+If this hypothesis is correct, the following three predictions should hold.
+
+### 3.2 Test 1: Prediction of zero within-prefecture variance
+**Logic**: Assessments are operated on a prefectural basis (Payment Fund Branch, National Health Insurance Federation) → If assessments explain everything, there should be no difference other than statistical noise between secondary medical care areas within the same prefecture.
+
+**Method**: Secondary medical area level SCR (n=335) was decomposed into inter-prefectural variance and intra-prefectural variance.
+
+**Result**:
+
+| Code | Name | Inter-prefecture variance contribution rate | Intra-prefecture variance contribution rate | Judgment |
+|---|---|---:|---:|---|
+| L008 | General anesthesia | **14.2%** | **85.8%** | **Rejected** (cannot be explained in assessment) |
+| L002 | Epidural | 27.3% | 72.7% | **Rejected** |
+| L004 | Spinal anesthesia | 42.0% | 58.0% | Judgment reserved |
+| L005 | Lower extremity delivery anesthesia | 46.1% | 53.9% | Judgment reserved |
+| L100 | Nerve block | 34.9% | 65.1% | **Rejected** |
+| L104 | Trigger point injection | 41.9% | 58.1% | Reservation of judgment |
+
+**Interpretation**:
+- **General anesthesia (L008)**: 85.8% of regional differences occur between secondary medical care areas within the same prefecture. Prefectural assessment policies can only explain 14.2% at most.
+- **Epidural anesthesia (L002)**: Similarly, 72.7% were due to local factors.
+- **Spinal anesthesia (L004)/Lower extremity transfer (L005)**: The inter-prefectural contribution rate is in the 40% range, and the impact of the assessment policy may be somewhat large. However, the majority is still due to factors within the prefecture.
+
+**Specific example of variation within the prefecture (general anesthesia L008 SCR)**:
+- Tokyo: 61.4-458.9 (397.5 point width, 12 medical areas)
+- Gunma prefecture: 10.7-198.0 (187.3 point width, 10 medical areas)
+- Kumamoto prefecture: 2.3 to 170.9 (168.6 point width, 10 medical areas)
+- Osaka Prefecture: 73.5 to 136.0 (62.5 point range, 8 medical areas) ← Osaka is relatively homogeneous
+
+### 3.3 Test 2: Predicting cross-code correlation
+
+**Logic**: Codes under the same assessment logic should be perfectly correlated. Conversely, if an alternative relationship is shown (general anesthesia vs. spinal anesthesia, etc.), it reflects clinical choice.
+
+**Results (prefecture level r)**:
+
+| pair | r value | interpretation |
+|---|---:|---|
+| General anesthesia vs anesthesia management fee1 | +0.788 | Strong positive correlation (common factor in specialist supply) |
+| General anesthesia vs spinal anesthesia | **-0.506** | **Strong negative correlation (surrogate relationship)** |
+| General anesthesia vs. lower extremity transfer | -0.324 | Negative correlation (alternative relationship) |
+| General anesthesia vs. epidural | +0.316 | Weak positive correlation |
+| Epidural vs spinal | -0.169 | Weak negative correlation (alternative relationship?) |
+| Nerve block vs trigger point | +0.022 | Uncorrelated (different determinants) |
+
+**Interpretation**:
+- **r=-0.506 for general vs. spinal anesthesia** is clinically significant. More spinal anesthesia in areas with less general anesthesia → strong evidence of true clinical regional differences in the choice of anesthesia method. If it is an appraisal, both should increase or decrease in the same direction.
+- Similar negative correlation between general anesthesia vs. lower extremity transmission. There are regions that prefer regional anesthesia.
+
+### 3.4 Test 3: Quantitative evaluation of assessment rate impact
+
+**Logic**: Can inter-prefectural differences in assessment rates quantitatively explain regional differences in SCR?
+
+**Data**:
+- Regional differences in assessment rates based on payment fund examination statistics: **Maximum 0.28% (Osaka) ~ Minimum 0.07% (Miyazaki)**
+- In other words, the inter-prefectural range of assessment rates is approximately **0.2 percentage points**
+
+**Estimated maximum impact on SCR**:
+- 0.2% difference in assessment rate = difference in which 20 out of 10,000 complaints are deleted in assessment
+- In an area with SCR 100, if the assessment rate is 0.2% higher → SCR will decrease by approximately 0.2 points (100 → 99.8)
+
+**On the other hand, regional differences in actual SCR**:
+| Code | SCR width (points) | Width that can be explained by assessment | Explanatory power of assessment |
+|---|---:|---:|---|
+| General anesthesia L008 | 62 | 0.2 | **0.3%** |
+| Epidural anesthesia L002 | 198 | 0.2 | 0.1% |
+| Spinal anesthesia L004 | 142 | 0.2 | 0.1% |
+| Lower limb transmission L005 | 245 | 0.2 | 0.08% |
+
+**Conclusion**: **It is quantitatively impossible to explain the SCR difference (62 to 245 points) by the assessment rate difference (0.2% point)**. The assessment explains less than 1% of regional differences.
+
+> ⚠️ **Note**: This is a comparison of "all assessment rates". As assessment rate data by medical practice code has not been made public, it cannot be denied that the difference in assessment rates for specific codes may be even greater. However, since the total assessment rate is in the 0.2% range, it is logically difficult for a specific code to have a difference of several tens of percentage points.
+
+---
+
+## 4. Additional analysis at the secondary medical area level
+
+### 4.1 SCR distribution at secondary medical area level (n=335)
+
+| Code | Name | P10 | P25 | P50 | P75 | P90 | CV(%) |
+|---|---|---:|---:|---:|---:|---:|---:|
+| L008 | General anesthesia | 32.3 | 49.5 | 73.2 | 102.3 | 131.5 | 54.6 |
+| L002 | Epidural | 7.6 | 31.8 | 73.9 | 126.5 | 184.0 | 83.2 |
+| L004 | Spinal anesthesia | 31.1 | 56.6 | 84.3 | 125.9 | 169.0 | 56.3 |
+| L005 | Lower extremity delivery anesthesia | 16.0 | 37.7 | 80.1 | 154.0 | 222.9 | 86.8 |
+| L009 | Anesthesia management fee 1 | 32.5 | 51.1 | 79.1 | 116.2 | 149.1 | 57.2 |
+| L100 | Nerve Block | 23.4 | 42.7 | 72.2 | 118.7 | 174.7 | 72.1 |
+| L104 | Trigger Point | 56.0 | 73.1 | 97.7 | 137.0 | 184.7 | 54.0 |
+
+At the secondary medical area level, CV increased significantly compared to the prefecture level (L008: 16.3% → 54.6%). This shows that there are large variations even among secondary medical care areas within the prefecture.
+
+### 4.2 Proxy indicators for the scope of influence of university medical offices
+
+Anesthesia management fee 1 (L009) is calculated under the supervision of an anesthesiologist, so the L009/L008 ratio serves as a proxy index for the density of anesthesiologist placement.
+
+**Secondary medical care area with high management fee ratio (full of specialists)**:
+- Okinawa 4705 area (2.23), Okinawa 4704 area (2.21), Gunma 1009 area (2.19), Gunma 1002 area (2.11), Fukuoka 4003 area (2.10)
+
+**Secondary medical care area with low management fee ratio (specialists are rare)**:
+- Akita 507 area (0.00), Shimane 3202 area (0.01), Yamaguchi 3508 area (0.03), Iwate 307 area (0.05), Ibaraki 802 area (0.15)
+
+**Correlation analysis (secondary medical area level)**:
+- Management fee ratio vs regional anesthesia index: r=-0.044 (nearly no correlation)
+- Management fee ratio vs. pain clinic index: r=-0.011 (no correlation)
+
+→ **Specialist density itself is independent of regional anesthesia preference**. This refutes the simple hypothesis that ``regional anesthesia is more common because there are specialists.''
+
+---
+
+## 5. Pain clinic → Verification of regional anesthesia spillover hypothesis
+
+### 5.1 Hypothesis
+
+> Anesthetists in regions with active pain clinics are proficient in regional anesthesia techniques and tend to use regional anesthesia in conjunction with surgical anesthesia.
+
+### 5.2 Correlation analysis (secondary medical area level n=335)
+
+| Pain index | vs | r value | Judgment |
+|---|---|---:|---|
+| Nerve block (L100) | Epidural anesthesia (L002) | +0.166 | Weak positive association |
+| Nerve block (L100) | Spinal anesthesia (L004) | +0.114 | Weak positive association |
+| Nerve block (L100) | Lower limb transmission (L005) | +0.028 | Uncorrelated |
+| Nerve block (L100) | General anesthesia (L008) | **+0.307** | **Moderate positive association** |
+| Trigger point (L104) | Epidural anesthesia (L002) | +0.074 | No correlation |
+| Trigger point (L104) | Spinal anesthesia (L004) | -0.028 | No correlation |
+| Trigger point (L104) | Lower extremity transmission (L005) | +0.140 | Weak positive association |
+| Trigger point (L104) | General anesthesia (L008) | -0.028 | No correlation |
+| **Pain Comprehensive Index** | **Regional Anesthesia Comprehensive Index** | **+0.153** | **Weak positive association** |
+
+### 5.3 Interpretation
+
+- **Direct spillover effect is limited** (about r=0.15). Even if pain clinics become more popular, there is no trend toward a dramatic increase in the use of regional anesthesia for surgical anesthesia.
+- However, there is a moderate correlation of r=+0.307** for **nerve block (L100) → general anesthesia (L008). This can be interpreted as a reflection of the **supply factor**: ``A region with active pain clinics = a region with a high presence of anesthesiologists = a large number of general anesthesia patients.''
+- Trigger point injections (L104) are also performed in orthopedics, so nerve blocks (L100) are more appropriate as a pure indicator of pain clinic activity.
+- **Hypothesis modification**: Pain clinic activity is not a direct factor in regional anesthesia preference, but serves as a proxy indicator of **overall presence** (manpower, educational structure) of the anesthesiology department.
+
+---
+
+## 6. Overall conclusion
+
+### 6.1 Determination of the null hypothesis “Assessment explains all regional differences”
+
+| Test | Results | Judgment |
+|---|---|---|
+| Test 1: Zero variance within prefecture | 85.8% of regional differences in general anesthesia are within prefecture | **H0 rejected** |
+| Test 2: Cross-code correlation | General anesthesia and spinal anesthesia are inversely correlated (r=-0.506) | **H0 rejected** (evidence of clinical selection) |
+| Test 3: Assessment rate impact | SCR difference of 62 points cannot be explained with assessment rate difference of 0.2% | **H0 rejected** |
+**Conclusion**: **Regional differences in anesthesia-related medical practices cannot be explained by differences in assessment alone. True treatment variations (clinical regional differences) exist. **
+
+### 6.2 Candidate factors that cause regional differences
+
+Contribution of factors estimated from sensitivity analysis results:
+
+| Factor | Estimated contribution | Evidence |
+|---|---|---|
+| **Factors unique to secondary medical care areas** (facility characteristics, physician training history, university medical office policies) | Maximum | Predominantly distributed within the prefecture (58-86%) |
+| **Prefectural-level factors** (including assessment policy) | 14-46% | Contribution rate of inter-prefectural variance |
+| **Assessment policy (narrow sense)** | <1% | SCR impact estimation of assessment rate difference |
+| **Alternative relationship of anesthesia method** | Significant | Whole body-spine r=-0.506 |
+| **Pain clinic activities (spillover)** | Limited | r=0.15 approximately |
+
+### 6.3 Verification of effectiveness of university hospital (medical office)
+
+→ **See Chapter 7 for details**
+
+---
+
+## 7. Verification of university hospital (medical office) effect
+
+### 7.1 Overview and method
+
+We mapped 81 university hospitals (44 national, 8 public, and 29 private) into 64 secondary medical care areas, and compared the SCR patterns of areas where university hospitals are located versus areas where they are not located. The mapping is based on the location of each university (city, ward, town, village) and the correspondence of the secondary medical care area.
+- **University hospital area**: 64 areas (19.1% of 335 areas)
+- **Non-located area**: 271 areas (80.9%)
+- **Area with multiple universities**: 13 areas (5 in central Tokyo, 3 in western ward, 2 in Mishima, Osaka, etc.)
+
+> Note: Japan has at least one medical school in all 47 prefectures due to its "one prefecture, one medical school" policy. Therefore, there is no prefecture without a university hospital, and the essential analysis method is **intra-prefecture comparison** rather than inter-prefecture comparison.
+
+### 7.2 Overall comparison: Areas where university hospitals are located vs areas where they are not located
+
+| Code | Name | University area mean (n) | Non-university area mean (n) | Difference | Cohen's d | t value |
+|---|---|---:|---:|---:|---:|---:|
+| L008 | General anesthesia | 130.2 (64) | 67.7 (270) | **+62.4** | **+1.780** | 9.72 |
+| L001 | Intravenous anesthesia | 137.4 (64) | 56.3 (263) | +81.1 | +1.238 | 7.01 |
+| L009 | Anesthesia management fee 1 | 124.8 (64) | 77.6 (250) | +47.2 | +1.021 | 6.96 |
+| L002 | Epidural | 127.4 (64) | 87.2 (243) | +40.2 | +0.491 | 3.75 |
+| L100 | Nerve block (hospitalization) | 127.1 (64) | 93.3 (271) | +33.8 | +0.444 | 3.14 |
+| L100 | Nerve block (outpatient) | 115.7 (64) | 82.1 (271) | +33.6 | +0.525 | 3.59 |
+| L004 | Spinal anesthesia | 108.6 (64) | 90.3 (270) | +18.3 | +0.345 | 2.73 |
+| L005 | Lower extremity delivery anesthesia | 120.3 (63) | 113.9 (259) | +6.4 | +0.055 | 0.44 |
+| L104 | Trigger point (outpatient) | 107.2 (64) | 112.9 (271) | -5.8 | -0.096 | -0.78 |
+
+**Interpretation**:
+- **General anesthesia (L008)**: Cohen's d=1.78 is an extremely large effect size. University hospital areas are about 30% higher than the national average, and non-university areas are about 30% lower.
+- **Intravenous anesthesia (L001)**: d=1.24. One of the most prominent codes is concentration in the university hospital area.
+- **Lower extremity delivery anesthesia (L005) and trigger point (L104)**: No difference. These are determined by local factors in the region, regardless of the presence or absence of university hospitals.
+
+### 7.3 Comparison within the same prefecture (analysis controlling assessment policy)
+The prefecture-level assessment policy applies equally to all secondary health care areas. Therefore, by comparing university hospital areas and non-university areas within the same prefecture, it is possible to estimate a ``pure university hospital effect'' that completely eliminates the influence of assessments.
+
+| Code | Name | Difference within prefecture (average) | SD | t value | University area > Non-university area |
+|---|---|---:|---:|---:|---|
+| L008 | General anesthesia | **+61.4** | 33.7 | **12.49** | **47/47 prefecture (100%)** |
+| L001 | Intravenous anesthesia | +84.5 | 75.3 | 7.70 | 42/47 prefectures (89%) |
+| L009 | Anesthesia management fee 1 | +46.8 | 41.4 | 7.74 | 40/47 prefecture (85%) |
+| L002 | Epidural anesthesia | +51.6 | 72.3 | 4.89 | 39/47 prefectures (83%) |
+| L100 | Nerve block (hospitalization) | +43.9 | 64.5 | 4.66 | 34/47 prefectures (72%) |
+| L004 | Spinal anesthesia | +20.5 | 37.5 | 3.75 | 31/47 prefecture (66%) |
+
+**Important findings**:
+- **General anesthesia (L008)**: SCR in university hospital areas exceeds non-university areas in **all 47 prefectures**. The mean difference +61.4 points, t=12.49, is highly statistically significant. There are no exceptions.
+- This effect is **completely independent** of the prefecture's assessment policy. Under the same assessment environment, secondary medical care areas where university hospitals are located consistently have high SCRs for anesthesia-related activities.
+- Even for epidural anesthesia (L002), 83% of prefectures are located in university areas. The University Hospital effect has been confirmed for a wide range of procedures including regional anesthesia.
+
+### 7.4 Three-step variance decomposition
+
+Decomposes the total SCR variance into three components: "inter-prefecture", "university hospital effect within prefecture", and "residual":
+
+| Code | Name | Between prefectures | University hospital effect | Residual | University effect as a percentage of within-prefecture variance |
+|---|---|---:|---:|---:|---:|
+| L008 | General anesthesia | 14.5% | **38.5%** | 47.0% | **45.0%** |
+| L001 | Intravenous anesthesia | 21.3% | **32.6%** | 46.1% | 41.5% |
+| L009 | Anesthesia management fee 1 | 20.0% | 23.7% | 56.4% | 29.6% |
+| L002 | Epidural anesthesia | 22.4% | 14.0% | 63.7% | 18.0% |
+| L100 | Nerve block (hospitalization) | 28.9% | 12.7% | 58.4% | 17.8% |
+| L004 | Spinal anesthesia | 41.7% | 8.6% | 49.7% | 14.7% |
+
+**Interpretation**:
+- **General anesthesia (L008)**: In the previous analysis, the within-prefecture variance was found to be 85.5%, and of that within-prefecture variance, **45.0% is explained by the presence or absence of a university hospital**. The contribution of 38.5% to the total variance is quite large for a single binary variable (with/without a university hospital).
+- **Residual 47.0%**: Half of the variance that cannot be explained by the presence or absence of a university hospital remains. This suggests other factors such as individual hospital characteristics, geographic conditions, and population density.
+- **Spinal anesthesia (L004)**: The inter-prefectural variance was the largest (41.7%) and the university hospital effect was the smallest (8.6%). Regional differences in spinal anesthesia are more likely to be explained by prefecture-level factors (including local clinical culture and assessment) than by university hospitals.
+
+### 7.5 Detailed pattern of notable prefectures
+
+#### 7.5.1 Kumamoto Prefecture (typical “university hospital concentration” pattern)
+
+| Secondary medical care area | SCR(L008) | University hospital |
+|---|---:|---|
+| Kumamoto/Kamimashiki | **168.7** | ★ Kumamoto University Hospital |
+| Yashiro | 117.3 | - |
+| Kuma | 73.8 | - |
+| Amakusa | 57.0 | - |
+| Kikuchi | 49.7 | - |
+| Ariake | 48.6 | - |
+| Ashikita | 41.7 | - |
+| Shikamoto | 37.3 | - |
+| Uki | 7.5 | - |
+| Aso | 2.3 | - |
+
+→ University hospital area (168.7) vs non-university area average (48.4) = **difference of 120.3 points**. Typical core concentration pattern.
+
+#### 7.5.2 Tokyo (many university hospitals are distributed)
+
+| Secondary medical care area | SCR(L008) | University hospital |
+|---|---:|---|
+| Central area | **435.7** | ★ University of Tokyo, Tokyo University of Science, Juntendo, Nippon Medical School, Jikei (5 schools) |
+| Western Ward | **168.5** | ★ Keio, Tokyo Medical University, Tokyo Women's Medical University (3 schools) |
+| Northwestern part of the ward | 83.4 | ★ Nihon University Itabashi, Teikyo (2 schools) |
+| Southern part of the ward | 118.9 | ★ Showa, Toho (2 schools) |
+| Southern Kitatama | 121.9 | ★ Kyorin (1 school) |
+| Southwest Ward | 110.1 | - |
+| Eastern Ward | 97.8 | - |
+| Western Kitatama | 88.4 | - |
+| Minamitama | 71.1 | - |
+| Northeastern part of the ward | 61.8 | - |
+| Northern Kitatama | 64.9 | - |
+| Nishitama | 62.5 | - |
+→ A clear dose-response relationship can be seen between the number of university hospitals and SCR (5 schools: 435.7 → 3 schools: 168.5 → 2 schools: 83-119 → 0 schools: 62-110).
+
+#### 7.5.3 Ibaraki Prefecture (Outlier: Tsukuba area has very high SCR)
+
+| Secondary medical care area | SCR(L008) | University hospital |
+|---|---:|---|
+| Tsukuba | **181.6** | ★ University of Tsukuba Hospital |
+| Mito | 145.5 | - |
+| Tsuchiura | 98.4 | - |
+| Hitachi | 77.0 | - |
+| Toride/Ryugasaki | 73.0 | - |
+| Koga/Bando | 63.8 | - |
+| Hitachiota/Hitachinaka | 36.0 | - |
+| Deer row | 33.8 | - |
+| Chikusei/Shimotsuma | 31.5 | - |
+
+→ Tsukuba (181.6) vs non-university average (82.7) = difference of 98.9 points. Mito is also expensive, but there is no university hospital (unique medical cluster).
+
+### 7.6 Conclusion
+
+1. **University hospital effect is highly statistically significant**:
+   - General anesthesia (L008) **All 47 prefectures** University area > Non-university area (100% concordance rate)
+   - Cohen's d = 1.78 is an effect size classified as "extremely large" in the social sciences.
+   - 38.5% of the total variance explained by the presence or absence of a university hospital (single dichotomous variable)
+2. **This cannot be explained by assessment**:
+   - The assessment policy is controlled because it is a comparison within the same prefecture.
+   - t=12.49 cannot be explained by chance.
+
+3. **Strength of effect varies by code**:
+   - **Strongest**: General anesthesia (L008, d=1.78), intravenous anesthesia (L001, d=1.24)
+   - **Moderate**: Anesthesia management fee (L009, d=1.02), epidural (L002, d=0.49), nerve block (L100, d=0.44-0.53)
+   - **None**: Lower limb transmission (L005, d=0.06), trigger point (L104, d=-0.10)
+
+4. **Interpretation notes**:
+   - University hospitals are usually located in the largest cities of their prefectures, so the "university hospital effect" and the "urban concentration effect" cannot be completely separated.
+   - The high SCR in the university hospital area is thought to be the result of a combination of (a) the high number of anesthesia cases performed at the university hospital itself, (b) the spread to university-affiliated hospitals, and (c) the concentration of hospitals in urban areas.
+   - In order to verify the true "medical office effect" (university's academic policies influence the medical treatment patterns of surrounding hospitals), additional analysis is required to compare the presence and absence of university hospitals within the same city size.
+
+---
+
+## 8. Limitations and future prospects
+
+### 8.1 Limitations of this analysis
+1. **Insufficient granularity of assessment rate data**: As the assessment rate by medical practice code is not disclosed, the estimation of Test 3 is an indirect estimate based on the overall assessment rate.
+2. **Structural limitations of SCR**: SCR itself is calculated from post-assessment data. However, as shown in the sensitivity analysis, the impact of the assessment is quantitatively small.
+3. **Anonymity of secondary medical area code**: The secondary medical area in SCR data is only a numeric code, and correspondence with the specific area name (e.g. northwestern part of the ward) is required separately.
+4. **Confounding factors**: Regional differences in disease structure (incidence of diseases requiring surgery) cannot be removed by adjusting SCR for age and sex.
+5. **Lack of time series analysis**: Only cross-sectional analysis of a single year (R4). Changes over time before and after the revision have not been examined
+6. **Unseparated university hospital effect vs. urban concentration effect**: Because university hospitals are usually located in the largest cities within a prefecture, the ``university hospital effect'' and the ``urban concentration effect'' are intertwined. Analysis that controls population size is necessary
+
+### 8.2 Next steps
+
+| Step | Content | Difficulty | Data |
+|---|---|---|---|
+| A | Separation of university hospital effect and urban concentration effect (comparison of the same population size) | Medium | Demographic statistics + main analysis data |
+| B | Correspondence between academic trends in university anesthesiology departments and SCR patterns in the sphere of influence | Medium | Conference presentation + main analysis data |
+| C | Comparison of SCR before and after revision in 2020 (impact of L008 name change) | Medium | After R8 data release |
+| D | Individual data analysis provided by NDB third party (comparison before and after assessment) | High | Ethics review/NDB application |
+| E | Exploration of anesthesia-related cases in examination variance visualization report | Low | Payment Fund Public Materials |
+
+### 8.3 Possibility of development as research
+
+This sensitivity analysis framework can be applied to research on regional differences in any clinical practice, not just anesthesia:
+- Selection of surgical procedure (laparoscopic vs. open, etc.)
+- Drug prescription pattern
+- Inspection order pattern
+
+Variance decomposition (inter-prefecture vs. intra-prefecture) and cross-code correlation are general-purpose methods that can be performed only with NDB/SCR public data.
+
+---
+
+## Appendix: Data sources and access methods used for analysis
+
+### SCR data (Cabinet Office)
+````
+# By prefecture/medical practice classification
+https://www5.cao.go.jp/keizai-shimon/kaigi/special/reform/mieruka/chiikisa/r04/01_r04_t_kubun.csv
+
+# Medical practice branch number by prefecture
+https://www5.cao.go.jp/keizai-shimon/kaigi/special/reform/mieruka/chiikisa/r04/04_r04_t_edaban.csv
+# By secondary medical area/medical practice classification
+https://www5.cao.go.jp/keizai-shimon/kaigi/special/reform/mieruka/chiikisa/r04/02_r04_n_kubun.csv
+
+# Secondary medical care area/medical practice branch number
+https://www5.cao.go.jp/keizai-shimon/kaigi/special/reform/mieruka/chiikisa/r04/05_r04_n_edaban.csv
+````
+Encoding: Shift_JIS
+
+### Examination Statistics (Payment Fund)
+````
+https://www.ssk.or.jp/tokeijoho/shinsatokei/index.html
+````
+Annual statistics and monthly data for 2020 can be downloaded in ZIP format.
