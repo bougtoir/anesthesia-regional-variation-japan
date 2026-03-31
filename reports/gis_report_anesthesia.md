@@ -126,3 +126,134 @@
 - SCR: 内閣府「見える化」R4年度 二次医療圏別 (https://www5.cao.go.jp/keizai-shimon/kaigi/special/reform/mieruka/chiikisa/r04/)
 - GIS: 国土数値情報 医療圏データ R2年度 (https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-A38.html)
 - 大学病院: 81校 → 64二次医療圏にマッピング (手動照合・検証済み)
+
+---
+
+# English Translation
+
+---
+
+# Regional differences in anesthesia GIS visualization report
+
+## Overview
+
+SCR data at the level of secondary medical care areas (335 areas) and university hospital location information were integrated with GIS data, and regional differences in anesthesia-related indicators were visualized on a map. Prefectural boundaries are distinguished by **solid lines**, and secondary medical area boundaries are distinguished by **dotted lines**.
+
+In addition, in order to verify the transfer effect of assessing ``general anesthesia (L008) vs. spinal anesthesia (L004)'' in femoral neck fractures, we conducted a sensitivity analysis of the L008+L004 total SCR.
+
+---
+
+## Figure 1: General anesthesia (L008) SCR
+
+![General anesthesia SCR](https://app.devin.ai/attachments/136a03dd-cda3-4978-b5d4-2344f34696a6/map_L008_scr.png)
+
+- Red dot = university hospital location area
+- High SCR (warm colors) are concentrated in areas where university hospitals are located
+- Central Tokyo (5 schools): SCR=435.7, Hokkaido Kamikawa (Asahikawa Medical University): SCR=226.5
+- Many areas without university hospitals have SCR<70 (cool colors)
+
+---
+
+## Figure 2: Secondary medical care area where university hospitals are located
+
+![University Hospital Location](https://app.devin.ai/attachments/025fb89e-a34c-40bb-a749-9f24fa1a99cc/map_univ_presence.png)
+- Red = University hospital available (64 areas / 335 areas = 19%)
+- When superimposed on Figure 1, the correspondence between the university hospital area and the L008 high SCR area is visually clear.
+
+---
+
+## Figure 3: Number of university hospitals (dose response)
+
+![Number of university hospitals](https://app.devin.ai/attachments/17314cd4-3e73-4adc-a621-cf3ae51e5830/map_n_univ.png)
+
+- 0 schools (271 areas) → 1 school (51 areas) → 2 schools (10 areas) → 3 schools (2 areas) → 5 schools (1 area: Central Tokyo)
+- L008 SCR tends to increase as the number of university hospitals increases (dose-response relationship)
+
+---
+
+## Figure 4: Spinal anesthesia (L004) SCR
+
+![Spinal anesthesia SCR](https://app.devin.ai/attachments/a00b3700-622f-4e1c-aa13-6e7e171f8554/map_L004_scr.png)
+
+- Different pattern from L008: weak association with university hospitals (Cohen's d = 0.36)
+- High SCR areas are scattered in Tohoku and Hokuriku
+- **Positive correlation with L008 (r = +0.235)**: If transfer due to appraisal (L008→L004) is the main cause, there should be a negative correlation, but it is actually positive → Transfer due to appraisal is not the main cause
+
+---
+## Figure 5: General anesthesia + spinal anesthesia total SCR (L008+L004) -- Neutralization of assessment transfer effect
+
+![L008+L004 total](https://app.devin.ai/attachments/7537701c-0530-4898-83fc-a83b5fdec1e4/map_L008_L004_combined.png)
+
+**This is the core illustration of this report. **
+
+There may be regional differences depending on the assessment of whether to calculate ``spinal anesthesia + sedation + O2 = general anesthesia'' or ``spinal anesthesia only'' for femoral neck fractures. By taking the sum of L008+L004, we visualize the "true regional differences" that neutralize this transfer effect.
+
+### Results: Regional differences persist
+
+| Index | L008 alone | L004 alone | L008+L004 total |
+|------|----------|----------|--------------|
+| CV (coefficient of variation) | 53.3% | 56.4% | **43.4%** |
+| University area mean | 130.2 | 108.6 | **238.7** |
+| Non-university mean | 68.0 | 90.6 | **158.6** |
+| Difference | +62.2 | +17.9 | **+80.1** |
+| Cohen's d | 1.53 | 0.36 | **1.16** |
+| t value | 9.69 | 2.68 | **8.18** |
+| p-value | 7.4e-15 | 8.4e-3 | **1.5e-12** |
+
+- CV reduction: 53.3% → 43.4% (reduction rate only 19%)
+- **Even in total, the university hospital effect is still extremely large (d=1.16)**
+- Comparison within prefectures: Total SCR in university areas > non-university areas in **45 out of 47 prefectures (96%)**
+
+### Variance decomposition (L008+L004 total)
+
+| Component | SS | Contribution rate |
+|------|-----|---------|
+| Difference between prefectures | 358,911 | 18.9% |
+| Prefecture/university hospital effect | 475,738 | **25.1%** |
+| Residual | 1,060,474 | 56.0% |
+
+A single dichotomous variable, presence or absence of a university hospital, explains 25.1% of the variance in total SCR.
+
+---
+
+## Figure 6: Epidural anesthesia (L002) SCR
+
+![Epidural anesthesia SCR](https://app.devin.ai/attachments/0d0811fc-cff3-4e32-bd3a-c7a91114b6ea/map_L002_scr.png)
+- University hospital effect is moderate (Cohen's d = 0.49)
+- A unique geographical pattern where high SCR areas are concentrated in western Japan (especially Kyushu)
+
+---
+
+## Conclusion of sensitivity analysis
+
+### Verification of transfer hypothesis through appraisal
+
+As in the case of femoral neck fracture, cases where ``even though it is the same medical procedure, it can be calculated as L008 or only L004 depending on the region'':
+
+1. **L008 and L004 should be negatively correlated** → Actually **r = +0.235 (positive correlation)**
+2. **L008+L004 total CV should be close to zero** → Actually **CV = 43.4% (still large)**
+3. **In total, the university hospital effect should disappear** → Actually **d = 1.16 (still extremely large)**
+
+### Interpretation
+
+| Scenario | Prediction | Observation | Judgment |
+|----------|------|------|------|
+| Assessment transfer is all the regional difference | r(L008,L004)≈-1, CV(total)≈0 | r=+0.24, CV=43% | **Reject** |
+| Assessment transfer accounts for most of the regional differences | CV significantly decreased | CV decreased by only 19% | **Rejected** |
+| Appraisal transfer is only partially, the essence is clinical policy difference | CV partially decreased, university effect remains | CV 19% decrease, d=1.16 | **Support** |
+**Conclusion: Assessment transfers explain only a small portion (up to 19%) of regional differences. The remaining 81% or more is due to regional differences in essential clinical policies related to the presence or absence of university hospitals. **
+
+However, this “regional variation in clinical policy”:
+- Influence of academic policies of university medical offices
+- Hospital agglomeration effect in urban areas (confounded with university hospitals)
+- Regional differences in defensive reduction claims due to repeated assessments
+
+further analysis is required to separate them.
+
+---
+
+## Data source
+
+- SCR: Cabinet Office “Visualization” R4 by secondary medical area (https://www5.cao.go.jp/keizai-shimon/kaigi/special/reform/mieruka/chiikisa/r04/)
+- GIS: National Land Numerical Information Medical Area Data R2 (https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-A38.html)
+- University hospitals: 81 schools → mapped to 64 secondary medical areas (manual verification and verification completed)
