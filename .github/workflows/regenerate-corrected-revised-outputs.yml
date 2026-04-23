@@ -1,0 +1,101 @@
+name: Regenerate corrected revised outputs
+
+on:
+  push:
+    branches:
+      - fix/revised-figures-docx
+    paths:
+      - scripts/regenerate_corrected_revised_outputs.py
+      - .github/workflows/regenerate-corrected-revised-outputs.yml
+      - scripts/create_revised_rapm_en.py
+      - scripts/create_revised_rapm_jp.py
+      - scripts/generate_maps_en.py
+      - scripts/generate_all_maps.py
+      - scripts/create_3d_v2.py
+      - scripts/screenshot_3d_v2.py
+      - data/**
+      - gis_data/**
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            gdal-bin \
+            libgdal-dev \
+            fonts-noto-cjk \
+            fonts-dejavu-core \
+            libreoffice
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install \
+            geopandas \
+            pyogrio \
+            fiona \
+            shapely \
+            pandas \
+            numpy \
+            scipy \
+            matplotlib \
+            pillow \
+            python-docx \
+            plotly \
+            playwright \
+            japanize-matplotlib
+          python -m playwright install --with-deps chromium
+
+      - name: Regenerate corrected figures and DOCX outputs
+        run: |
+          python scripts/regenerate_corrected_revised_outputs.py
+
+      - name: Show changed files
+        run: |
+          git status --short
+
+      - name: Commit regenerated artifacts
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            output/rapm_fig1_en.png \
+            output/rapm_fig1_jp.png \
+            output/rapm_fig2_en.png \
+            output/rapm_fig2_jp.png \
+            output/maps_2d_en/en_map_L008_L003_combined.png \
+            output/maps_2d_jp/map_L008_L003_combined.png \
+            output/maps_2d_en/*.png \
+            output/maps_2d_jp/*.png \
+            output/maps_3d_en/*.png \
+            documents/revised/regional_anesthesia_REVISED_EN.docx \
+            documents/revised/regional_anesthesia_REVISED_JP.docx \
+            reports/revised_figure_regeneration_report.md
+          if git diff --cached --quiet; then
+            echo "No regenerated artifacts changed."
+          else
+            git commit -m "Regenerate corrected revised figures and manuscripts"
+            git push
+          fi
