@@ -1,0 +1,12 @@
+placeholder
+====== 日本語DOCX ======
+http://localhost:8012/manuscript_jp.docx
+
+====== 日本語Markdown ======
+http://localhost:8012/manuscript_jp.md
+
+====== PRISMA図 ======
+http://localhost:8012/fig1_prisma.png
+
+====== 英語DOCX ======
+http://localhost:8012/manuscript_plos_ntds.docx
