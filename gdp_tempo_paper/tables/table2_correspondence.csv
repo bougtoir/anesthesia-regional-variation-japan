@@ -1,0 +1,9 @@
+Concept,"Population (Bongaarts-Feeney, 1998)",Capital (this paper)
+Flow,Births $B(t)$,Investment $I(t)$
+Stock,Population $N(t)$,Reproducible capital $W(t)$
+Quantum,Total Fertility Rate $TFR$,Investment rate $I/Y$
+Tempo,Mean age at childbearing $MAC(t)$,Time-to-build $\mu(t)$
+Bongaarts-Feeney adjustment,$TFR^\ast=TFR/(1-r(t))$,$K^\ast(t)$ via $\mu(t)$-weighted PIM
+Forgotten parameter,"Parity-specific $\sigma$ (Goldstein-Lutz-Scherbov, 2003)","Intangible share $\beta$ (Corrado-Hulten-Sichel, 2009)"
+Book-keeping identity,$dN/dt = B - d\cdot N$,$dW/dt = I - \delta W$
+Joint identification,TFR* vs. life-table consistency,PIM vs. CWON consistency

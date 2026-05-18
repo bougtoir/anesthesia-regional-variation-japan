@@ -1,0 +1,53 @@
+======================================================================
+MEDICAL SAPIR-WHORF HYPOTHESIS: EMPIRICAL ANALYSIS
+======================================================================
+
+
+1a) INTERRUPTED TIME-SERIES ANALYSIS: 2001 CRITERIA REVISION
+------------------------------------------------------------
+  intercept                     : β=   66.52, SE=  23.85, t=   2.79, p=0.0099 **
+  time_trend                    : β=   10.06, SE=   7.88, t=   1.28, p=0.2134 
+  level_change_2001             : β=  231.44, SE=  33.43, t=   6.92, p=0.0000 ***
+  slope_change_2001             : β=  -17.24, SE=   7.94, t=  -2.17, p=0.0397 *
+
+  Pre-revision mean (1996-2001):  91.7 cases/year
+  Post-revision mean (2002-2008): 339.9 cases/year
+  Ratio (post/pre):               3.71x increase
+
+  Pre-revision recognition rate:  17.1%
+  Post-revision recognition rate: 39.6%
+
+  Two-sample t-test (recognized cases):
+    t = 14.075, p = 0.000000
+
+
+SUMMARY STATISTICS
+------------------------------------------------------------
+  Total fiscal years:     29
+  Total claims (all years): 22724
+  Total recognized:       6973
+  Total deaths:           2826
+  Peak recognized year:   2007 (392 cases)
+
+
+1b) INTERNATIONAL COMPARISON
+------------------------------------------------------------
+
+Working-age (25-64) CV mortality rates per 100,000:
+  Japan               : IHD= 12.8, CVD= 10.2, Total= 23.0 | Recognition: Comprehensive   | Cases: ~200-300/yr [KAROSHI]
+  South Korea         : IHD= 15.2, CVD= 12.8, Total= 28.0 | Recognition: Comprehensive   | Cases: ~90-100/yr [KAROSHI]
+  Germany             : IHD= 28.4, CVD=  8.6, Total= 37.0 | Recognition: Limited         | Cases: <10/yr
+  France              : IHD= 14.6, CVD=  7.4, Total= 22.0 | Recognition: Limited         | Cases: <5/yr
+  United Kingdom      : IHD= 26.8, CVD=  7.8, Total= 34.6 | Recognition: Limited         | Cases: <5/yr
+  United States       : IHD= 46.2, CVD= 10.8, Total= 57.0 | Recognition: Very limited    | Cases: N/A/yr
+  Australia           : IHD= 18.4, CVD=  5.6, Total= 24.0 | Recognition: Limited         | Cases: <5/yr
+  Sweden              : IHD= 16.0, CVD=  5.8, Total= 21.8 | Recognition: Moderate        | Cases: <10/yr
+
+
+KEY FINDING:
+  Japan and South Korea have LOWER working-age CV mortality than
+  many Western nations, yet they are the ONLY countries with
+  comprehensive work-related CVD recognition systems. This supports
+  the Medical Sapir-Whorf Hypothesis: the existence of the diagnostic
+  category (karoshi/과로사) creates the infrastructure for recognition,
+  NOT the higher absolute disease burden.

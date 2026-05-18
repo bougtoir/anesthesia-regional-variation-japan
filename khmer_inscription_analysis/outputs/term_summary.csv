@@ -1,0 +1,19 @@
+term,group,note,hits,dated_hits,first_year,last_year
+lokeśvara,Mahayana,Avalokiteśvara/Lokeśvara cult,5,6,972.0,1026.0
+bodhisattva,Mahayana,Bodhisattva terminology,1,1,1178.0,1178.0
+mahābodhi,Mahayana,Bodhi/Buddhist cult vocabulary,1,1,1178.0,1178.0
+vajra,Mahayana,Vajrayāna/tantric marker,4,3,878.0,1145.0
+buddha,Buddhist-general,General Buddhist term,5,5,1178.0,1361.0
+stūpa,Buddhist-general,Buddhist monument term,1,1,1278.0,1278.0
+saṅgha,Buddhist-general,Buddhist monastic community,3,4,1107.0,1278.0
+buddhasāsa,Buddhist-general,Buddha-sāsana expression,1,1,1278.0,1278.0
+sāsana,Theravada/Pali,Pali sāsana / institutional vocabulary,1,1,1361.0,1361.0
+thera,Theravada/Pali,Thera/Theravāda-adjacent vocabulary,2,2,1278.0,1308.0
+bhikkhu,Theravada/Pali,Pali monastic term,0,0,,
+śiva,Shaiva,Śaiva vocabulary comparator,8,20,578.0,1178.0
+maheśvara,Shaiva,Śaiva deity title comparator,4,4,878.0,1306.0
+liṅga,Shaiva,Śaiva object vocabulary comparator,28,29,680.0,1118.0
+viṣṇu,Vaishnava,Vaiṣṇava vocabulary comparator,19,21,878.0,1178.0
+brahma,Brahmanical,Brahmanical vocabulary comparator,0,0,,
+brāhmaṇa,Brahmanical,Brahmin vocabulary comparator,4,4,678.0,1361.0
+deva,Brahmanical,General Indic divine vocabulary,20,25,578.0,1178.0

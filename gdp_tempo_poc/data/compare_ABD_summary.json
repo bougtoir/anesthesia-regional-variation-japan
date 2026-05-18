@@ -1,0 +1,30 @@
+{
+  "n_countries": 39,
+  "Test_B_growth_RMSE_gain_pp": {
+    "A_median": 0.02813579824027812,
+    "B_median": 0.0,
+    "D_median": 0.0002487626237939189,
+    "A_max": 0.24549157012135003,
+    "B_max": 0.15022824440988725,
+    "D_max": 0.2867615619060333,
+    "share_A_improves": 0.7435897435897436,
+    "share_B_improves": 0.10256410256410256,
+    "share_D_improves": 0.5384615384615384
+  },
+  "Test_A_levels_MAPE_gain_pp": {
+    "A_median": 0.0,
+    "B_median": 0.0,
+    "D_median": 0.3876295063439379,
+    "A_max": 0.4886925849702477,
+    "B_max": 0.4845615313581313,
+    "D_max": 1.8987199359813824,
+    "share_A_improves": 0.15384615384615385,
+    "share_B_improves": 0.23076923076923078,
+    "share_D_improves": 0.9743589743589743
+  },
+  "best_candidate_count": {
+    "A": 24,
+    "D": 13,
+    "B": 2
+  }
+}

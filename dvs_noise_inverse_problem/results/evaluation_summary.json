@@ -1,0 +1,47 @@
+{
+  "n_recordings": 20,
+  "methods": {
+    "pi_dc_dvs": {
+      "n_valid": 13,
+      "nrr": "0.171 \u00b1 0.342",
+      "spr": "0.841 \u00b1 0.342",
+      "f1": "0.488 \u00b1 0.453",
+      "auc": "0.546 \u00b1 0.218",
+      "nrr_mean": 0.17123900152806676,
+      "spr_mean": 0.8410247543402303,
+      "f1_mean": 0.4881121253847495,
+      "auc_mean": 0.5458188789756208
+    },
+    "fano_filter": {
+      "n_valid": 13,
+      "nrr": "0.713 \u00b1 0.232",
+      "spr": "0.939 \u00b1 0.056",
+      "f1": "0.697 \u00b1 0.339",
+      "auc": "0.866 \u00b1 0.107",
+      "nrr_mean": 0.7131193691986836,
+      "spr_mean": 0.9389333060186431,
+      "f1_mean": 0.6967509836727555,
+      "auc_mean": 0.8660095552263557
+    },
+    "temporal_filter": {
+      "n_valid": 13,
+      "nrr": "0.852 \u00b1 0.044",
+      "spr": "0.216 \u00b1 0.157",
+      "f1": "0.253 \u00b1 0.176",
+      "auc": "0.534 \u00b1 0.083",
+      "nrr_mean": 0.852007090160594,
+      "spr_mean": 0.21605068165756572,
+      "f1_mean": 0.25302421631533206,
+      "auc_mean": 0.5340270047042383
+    }
+  },
+  "a5_simulation": {
+    "max_improvement": 9.954525442829944,
+    "mean_improvement": 5.423753231061793
+  },
+  "figures": {
+    "fig5": "/home/ubuntu/repos/wip/dvs_noise_inverse_problem/fig5_systematic_evaluation.png",
+    "fig6": "/home/ubuntu/repos/wip/dvs_noise_inverse_problem/fig6_a5_simulation.png",
+    "fig7": "/home/ubuntu/repos/wip/dvs_noise_inverse_problem/fig7_per_recording_comparison.png"
+  }
+}

@@ -1,0 +1,8 @@
+Variant,Horizon,N,MAPE Mean,MAPE Median,Ratio Mean,Ratio Std
+Fixed-param (1970),53,40,13.7,7.7,1.309,0.554
+Fixed-param (1980),43,40,9.6,7.7,1.023,0.288
+Fixed-param (1990),33,40,7.8,6.5,0.953,0.198
+Fixed-param (2000),23,40,5.1,4.7,0.914,0.101
+Tempo-invariant,53,40,6.5,4.5,0.991,0.182
+Tempo-responsive,53,40,6.7,4.6,0.999,0.189
+Tempo-adjusted (TFR*),53,40,5.8,4.3,1.014,0.166

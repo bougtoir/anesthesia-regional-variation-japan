@@ -1,0 +1,169 @@
+{
+  "beta_params": {
+    "42nd Parliament (2015-2019)": {
+      "alpha": 0.2682915071795273,
+      "beta": 0.17634198809098112,
+      "mean_score": 0.603399433427762,
+      "n": 353
+    },
+    "43rd Parliament (2019-2021)": {
+      "alpha": 0.2447521940563171,
+      "beta": 0.17430255162410302,
+      "mean_score": 0.5840579710144927,
+      "n": 345
+    },
+    "44th Parliament (2021-2025)": {
+      "alpha": 0.3021961860962409,
+      "beta": 0.20074988111438585,
+      "mean_score": 0.6008522727272727,
+      "n": 352
+    },
+    "All terms combined": {
+      "alpha": 0.2710229476186187,
+      "beta": 0.18356840514017184,
+      "mean_score": 0.5961904761904762,
+      "n": 1050
+    }
+  },
+  "original_params": {
+    "sincere": {
+      "alpha": 8,
+      "beta": 2,
+      "mean": 0.8
+    },
+    "populist": {
+      "alpha": 2,
+      "beta": 5,
+      "mean": 0.2857142857142857
+    },
+    "strategic": {
+      "alpha": 5,
+      "beta": 3,
+      "mean": 0.625
+    }
+  },
+  "calibrated_params": {
+    "sincere": {
+      "alpha": 5.8,
+      "beta": 2.2,
+      "mean": 0.725
+    },
+    "populist": {
+      "alpha": 2.0,
+      "beta": 4.9,
+      "mean": 0.29
+    },
+    "strategic": {
+      "alpha": 4.2,
+      "beta": 2.8,
+      "mean": 0.6
+    }
+  },
+  "counterfactual": {
+    "Concave": [
+      {
+        "term": "42nd Parliament (2015-2019)",
+        "n_pledges": 353,
+        "pct_kept": 45.609065155807365,
+        "pct_partial": 29.461756373937675,
+        "pct_broken": 24.929178470254957,
+        "accountability_score": 0.603399433427762,
+        "tau_before": 1.0,
+        "tau_after": 1.2767878947484712,
+        "effective_vote_multiplier": 1.2767878947484712
+      },
+      {
+        "term": "43rd Parliament (2019-2021)",
+        "n_pledges": 345,
+        "pct_kept": 44.05797101449275,
+        "pct_partial": 28.695652173913043,
+        "pct_broken": 27.246376811594203,
+        "accountability_score": 0.5840579710144927,
+        "tau_before": 1.2767878947484712,
+        "tau_after": 1.2642368553102452,
+        "effective_vote_multiplier": 1.2642368553102452
+      },
+      {
+        "term": "44th Parliament (2021-2025)",
+        "n_pledges": 352,
+        "pct_kept": 44.034090909090914,
+        "pct_partial": 32.10227272727273,
+        "pct_broken": 23.863636363636363,
+        "accountability_score": 0.6008522727272727,
+        "tau_before": 1.2642368553102452,
+        "tau_after": 1.2751466136978686,
+        "effective_vote_multiplier": 1.2751466136978686
+      }
+    ],
+    "Linear": [
+      {
+        "term": "42nd Parliament (2015-2019)",
+        "n_pledges": 353,
+        "pct_kept": 45.609065155807365,
+        "pct_partial": 29.461756373937675,
+        "pct_broken": 24.929178470254957,
+        "accountability_score": 0.603399433427762,
+        "tau_before": 1.0,
+        "tau_after": 1.1033994334277621,
+        "effective_vote_multiplier": 1.1033994334277621
+      },
+      {
+        "term": "43rd Parliament (2019-2021)",
+        "n_pledges": 345,
+        "pct_kept": 44.05797101449275,
+        "pct_partial": 28.695652173913043,
+        "pct_broken": 27.246376811594203,
+        "accountability_score": 0.5840579710144927,
+        "tau_before": 1.1033994334277621,
+        "tau_after": 1.0840579710144929,
+        "effective_vote_multiplier": 1.0840579710144929
+      },
+      {
+        "term": "44th Parliament (2021-2025)",
+        "n_pledges": 352,
+        "pct_kept": 44.034090909090914,
+        "pct_partial": 32.10227272727273,
+        "pct_broken": 23.863636363636363,
+        "accountability_score": 0.6008522727272727,
+        "tau_before": 1.0840579710144929,
+        "tau_after": 1.1008522727272727,
+        "effective_vote_multiplier": 1.1008522727272727
+      }
+    ],
+    "Sigmoid": [
+      {
+        "term": "42nd Parliament (2015-2019)",
+        "n_pledges": 353,
+        "pct_kept": 45.609065155807365,
+        "pct_partial": 29.461756373937675,
+        "pct_broken": 24.929178470254957,
+        "accountability_score": 0.603399433427762,
+        "tau_before": 1.0,
+        "tau_after": 1.237689547696326,
+        "effective_vote_multiplier": 1.237689547696326
+      },
+      {
+        "term": "43rd Parliament (2019-2021)",
+        "n_pledges": 345,
+        "pct_kept": 44.05797101449275,
+        "pct_partial": 28.695652173913043,
+        "pct_broken": 27.246376811594203,
+        "accountability_score": 0.5840579710144927,
+        "tau_before": 1.237689547696326,
+        "tau_after": 1.1985872956104133,
+        "effective_vote_multiplier": 1.1985872956104133
+      },
+      {
+        "term": "44th Parliament (2021-2025)",
+        "n_pledges": 352,
+        "pct_kept": 44.034090909090914,
+        "pct_partial": 32.10227272727273,
+        "pct_broken": 23.863636363636363,
+        "accountability_score": 0.6008522727272727,
+        "tau_before": 1.1985872956104133,
+        "tau_after": 1.232730945086252,
+        "effective_vote_multiplier": 1.232730945086252
+      }
+    ]
+  }
+}

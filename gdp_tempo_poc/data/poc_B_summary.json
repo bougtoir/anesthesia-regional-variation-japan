@@ -1,0 +1,15 @@
+{
+  "n_countries": 39,
+  "test_B_median_rmse_pp": {
+    "M0": 2.505779162253825,
+    "M1": 2.722784018722049,
+    "M2": 2.716892684904823
+  },
+  "share_M1_beats_M0_B": 0.07692307692307693,
+  "share_M2_beats_M0_B": 0.10256410256410256,
+  "share_M2_beats_M1_B": 0.9487179487179487,
+  "median_mu_E0": 14.0,
+  "median_mu_E1_per_decade": 0.4,
+  "median_mu_X0": 61.0,
+  "median_mu_X1_per_decade": -0.4
+}

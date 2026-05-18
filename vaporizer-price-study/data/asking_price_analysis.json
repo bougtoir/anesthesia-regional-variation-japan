@@ -1,0 +1,75 @@
+{
+  "asking_summary": {
+    "Desflurane": {
+      "n": 60,
+      "mean": 234.6206666666667,
+      "sd": 224.67267883856542,
+      "median": 178.29500000000002,
+      "q25": 80.16999999999999,
+      "q75": 298.45,
+      "min": 29.93,
+      "max": 1336.21
+    },
+    "Sevoflurane": {
+      "n": 21,
+      "mean": 1262.6295238095238,
+      "sd": 552.1391560872693,
+      "median": 1277.4,
+      "q25": 800.92,
+      "q75": 1700.43,
+      "min": 396.59,
+      "max": 2526.64
+    },
+    "Isoflurane": {
+      "n": 39,
+      "mean": 651.4517948717948,
+      "sd": 400.9304793777371,
+      "median": 555.86,
+      "q25": 366.65,
+      "q75": 832.435,
+      "min": 184.83,
+      "max": 1761.32
+    }
+  },
+  "kruskal_wallis": {
+    "H": 66.03131041599437,
+    "P": 4.586518258644835e-15
+  },
+  "pairwise": {
+    "Desflurane vs Sevoflurane": {
+      "U": 29.0,
+      "P": 8.624751107759721e-11
+    },
+    "Desflurane vs Isoflurane": {
+      "U": 311.5,
+      "P": 7.566329728692821e-10
+    },
+    "Sevoflurane vs Isoflurane": {
+      "U": 665.0,
+      "P": 7.717827353325173e-05
+    }
+  },
+  "spread": {
+    "Desflurane": {
+      "asking_median": 178.29500000000002,
+      "sold_median": 125.0,
+      "spread": 53.295000000000016,
+      "spread_pct": 42.63600000000001,
+      "recent_sold_n": 29.0
+    },
+    "Sevoflurane": {
+      "asking_median": 1277.4,
+      "sold_median": 450.0,
+      "spread": 827.4000000000001,
+      "spread_pct": 183.8666666666667,
+      "recent_sold_n": 57.0
+    },
+    "Isoflurane": {
+      "asking_median": 555.86,
+      "sold_median": 200.0,
+      "spread": 355.86,
+      "spread_pct": 177.93,
+      "recent_sold_n": 73.0
+    }
+  }
+}

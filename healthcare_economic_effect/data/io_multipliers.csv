@@ -1,0 +1,16 @@
+country,iso3,multiplier,ci_lo,ci_hi,year,source
+Japan,JPN,2.78,2.74,2.9,2011,Yamada & Imanaka 2015
+Japan (JMARI),JPN,2.85,,,2006,Maeda 2008 (JMARI WP172)
+France,FRA,2.2,,,2010,Gutierrez-Hernandez & Abasolo-Alesson 2021
+Germany,DEU,2.1,,,2014,Henke & Ostwald 2012 (GGR estimate)
+Sweden,SWE,2.05,,,2010,Gutierrez-Hernandez & Abasolo-Alesson 2021
+Netherlands,NLD,2.0,,,2010,Gutierrez-Hernandez & Abasolo-Alesson 2021
+Italy,ITA,1.95,,,2010,Gutierrez-Hernandez & Abasolo-Alesson 2021
+Korea,KOR,1.95,,,2015,Bank of Korea I-O Tables 2019
+United Kingdom,GBR,1.9,,,2016,ONS Health SUT / King's Fund 2018
+Finland,FIN,1.88,,,2010,Gutierrez-Hernandez & Abasolo-Alesson 2021
+Spain,ESP,1.85,,,2010,Gutierrez-Hernandez & Abasolo-Alesson 2021
+Australia,AUS,1.85,,,2015,AIHW / Deloitte Access Economics 2016
+Canada,CAN,1.82,,,2009,CIHI / Conference Board 2013
+United States (Medicare),USA,1.7,,,2017,Dupor & Guerrero 2017 (Fed StL)
+OECD Average,OECD,1.95,1.5,2.9,2020,Synthesis (this study)

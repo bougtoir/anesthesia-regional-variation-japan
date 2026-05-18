@@ -1,0 +1,16 @@
+{
+  "n_countries": 39,
+  "n_cross_section": 39,
+  "log_ratio_median": -13.169336849617466,
+  "log_ratio_q25": -13.709275662509226,
+  "log_ratio_q75": -12.692811327186106,
+  "trajectory_rmse_median_produced": 0.049242792751303374,
+  "trajectory_rmse_median_tang_only": 0.04925171068298353,
+  "rnd_slope_on_log_ratio": -0.49430535523357977,
+  "rnd_intercept": -12.375203968082177,
+  "r2_cross_section": 0.48988682946414897,
+  "mu_A_median": 0.4021919621346195,
+  "mu_joint_median": 0.25958333333333333,
+  "beta_D_median": 0.01,
+  "beta_joint_median": 0.06
+}

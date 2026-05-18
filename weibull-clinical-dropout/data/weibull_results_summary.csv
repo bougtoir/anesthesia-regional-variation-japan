@@ -1,0 +1,28 @@
+Domain,Dataset,n,k (shape),k 95% CI,lambda (scale),lambda 95% CI,R-squared,KS statistic,Hazard pattern,Source
+HIV/ART,Sub-Saharan Africa,256000,0.627,"(0.592, 0.665)",106.84,"(99.28, 116.66)",0.9989,0.0094,DFR (decreasing),IeDEA Africa (Brinkhof 2009; Fox & Rosen 2010)
+HIV/ART,Asia-Pacific,48000,0.597,"(0.539, 0.652)",329.58,"(271.93, 431.83)",0.9990,0.0064,DFR (decreasing),IeDEA Asia-Pacific (Zhou 2012)
+HIV/ART,Latin America,35000,0.582,"(0.540, 0.629)",215.12,"(188.08, 251.70)",0.9996,0.0043,DFR (decreasing),IeDEA CCASAnet (Wolff 2008)
+HIV/ART,North America,82000,0.584,"(0.521, 0.654)",510.71,"(381.30, 726.39)",0.9985,0.0043,DFR (decreasing),NA-ACCORD (IeDEA NA)
+HIV/ART,Europe,95000,0.594,"(0.516, 0.676)",683.22,"(482.36, 1052.32)",0.9985,0.0047,DFR (decreasing),COHERE (IeDEA Europe)
+Antipsychotic,CATIE-Olanzapine,336,0.958,"(0.919, 1.018)",12.84,"(12.24, 13.32)",0.9991,0.0116,DFR (decreasing),CATIE Phase 1 (Lieberman 2005)
+Antipsychotic,CATIE-Quetiapine,337,0.916,"(0.865, 0.985)",8.50,"(8.10, 8.91)",0.9972,0.0230,DFR (decreasing),CATIE Phase 1 (Lieberman 2005)
+Antipsychotic,CATIE-Perphenazine,261,0.922,"(0.873, 0.998)",10.77,"(10.09, 11.30)",0.9968,0.0286,DFR (decreasing),CATIE Phase 1 (Lieberman 2005)
+Antipsychotic,EUFEST-First-Episode,498,0.923,"(0.845, 1.033)",20.76,"(17.80, 22.74)",0.9962,0.0128,DFR (decreasing),EUFEST (Kahn 2008)
+Antipsychotic,Finland-LAI,8719,0.737,"(0.690, 0.801)",66.66,"(60.93, 70.29)",0.9979,0.0167,DFR (decreasing),Finnish cohort LAI (Tiihonen 2017)
+Antipsychotic,Finland-Oral,53531,0.683,"(0.604, 0.750)",30.91,"(28.94, 32.74)",0.9938,0.0339,DFR (decreasing),Finnish cohort Oral (Tiihonen 2017)
+Substance Use,Opioid-Methadone,12500,0.576,"(0.525, 0.625)",23.98,"(21.71, 25.42)",0.9944,0.0284,DFR (decreasing),DATOS/SAMHSA methadone programs
+Substance Use,Opioid-Buprenorphine,8200,0.619,"(0.539, 0.677)",11.16,"(10.21, 11.97)",0.9940,0.0262,DFR (decreasing),Multi-site buprenorphine trials (Weiss 2011)
+Substance Use,Alcohol-Outpatient,15000,0.714,"(0.655, 0.770)",6.39,"(6.06, 6.66)",0.9979,0.0135,DFR (decreasing),Project MATCH / COMBINE (Anton 2006)
+Substance Use,Cocaine-Outpatient,6800,0.681,"(0.613, 0.742)",4.77,"(4.50, 4.99)",0.9968,0.0167,DFR (decreasing),NIDA CTN cocaine trials
+Substance Use,Cannabis-Outpatient,4500,0.733,"(0.666, 0.789)",7.02,"(6.61, 7.33)",0.9970,0.0156,DFR (decreasing),MTP/CTN cannabis trials (Budney 2006)
+Substance Use,Residential-All,28000,0.511,"(0.454, 0.567)",5.27,"(4.62, 5.71)",0.9928,0.0341,DFR (decreasing),SAMHSA TEDS residential programs
+Cardiac Rehab,Phase-I-Inpatient,3200,0.775,"(0.679, 0.895)",8.70,"(6.80, 10.42)",0.9971,0.0118,DFR (decreasing),Multi-centre Phase I (Midence 2020)
+Cardiac Rehab,Phase-II-Outpatient,12500,0.613,"(0.497, 0.715)",11.03,"(9.17, 12.44)",0.9807,0.0392,DFR (decreasing),EUROASPIRE V / Turk-Adawi 2013 meta
+Cardiac Rehab,Phase-III-Maintenance,5800,0.670,"(0.616, 0.732)",20.28,"(18.69, 21.62)",0.9961,0.0225,DFR (decreasing),Long-term maintenance cohorts (Doll 2015)
+Cardiac Rehab,Post-MI,8500,0.664,"(0.577, 0.757)",12.38,"(10.34, 13.69)",0.9877,0.0319,DFR (decreasing),Post-MI rehabilitation (Kotseva 2019)
+Cardiac Rehab,Post-CABG,4200,0.722,"(0.630, 0.829)",13.61,"(11.26, 15.00)",0.9905,0.0280,DFR (decreasing),Post-CABG rehabilitation (Turk-Adawi 2013)
+Clinical Trial,Oncology-RCT,18500,0.742,"(0.701, 0.796)",39.92,"(36.69, 42.10)",0.9992,0.0129,DFR (decreasing),McChrystal 2025 oncology subset
+Clinical Trial,Cardiovascular-RCT,24000,0.689,"(0.632, 0.751)",137.74,"(115.74, 162.17)",0.9997,0.0034,DFR (decreasing),McChrystal 2025 cardiovascular subset
+Clinical Trial,Psychiatric-RCT,15200,0.733,"(0.636, 0.835)",12.66,"(10.84, 13.76)",0.9917,0.0240,DFR (decreasing),McChrystal 2025 psychiatric subset
+Clinical Trial,Diabetes-RCT,12800,0.696,"(0.638, 0.790)",91.42,"(71.77, 106.93)",0.9983,0.0084,DFR (decreasing),McChrystal 2025 metabolic subset
+Clinical Trial,Vaccine-RCT,28500,0.679,"(0.509, 0.929)",75.81,"(30.94, 217.15)",0.9957,0.0044,DFR (decreasing),COVID-19 vaccine phase III trials (Polack 2020; Baden 2021)

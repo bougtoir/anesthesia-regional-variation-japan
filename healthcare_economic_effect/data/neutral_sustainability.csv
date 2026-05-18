@@ -1,0 +1,14 @@
+iso3,country,io_multiplier,eff_tax_rate,public_share_che,fiscal_return_ratio,sustainable
+JPN,Japan,2.78,0.33,0.84,1.09,Yes
+USA,USA,1.7,0.27,0.5,0.92,No
+DEU,Germany,2.1,0.39,0.85,0.96,No
+GBR,UK,1.9,0.33,0.8,0.78,No
+FRA,France,2.2,0.45,0.84,1.18,Yes
+SWE,Sweden,2.05,0.43,0.85,1.04,Yes
+CAN,Canada,1.82,0.33,0.73,0.82,No
+AUS,Australia,1.85,0.28,0.68,0.76,No
+KOR,Korea,1.95,0.27,0.61,0.86,No
+ITA,Italy,1.95,0.43,0.74,1.13,Yes
+ESP,Spain,1.85,0.35,0.71,0.91,No
+NLD,Netherlands,2.0,0.39,0.82,0.95,No
+FIN,Finland,1.88,0.43,0.78,1.04,Yes

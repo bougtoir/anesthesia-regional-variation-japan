@@ -1,0 +1,83 @@
+{
+  "poc_summary": {
+    "n_countries": 39,
+    "data_source": "World Bank WDI (SH.XPD.CHEX.PP.CD, SP.DYN.LE00.IN)",
+    "period": "2000-2019",
+    "models": {
+      "M0_flow": {
+        "description": "Naive flow-only regression",
+        "level_rmse_median": 0.51,
+        "change_rmse_median": 0.455
+      },
+      "M1_constant_lag": {
+        "description": "Constant lag mu_H (PIM)",
+        "level_rmse_median": 0.441,
+        "change_rmse_median": 0.403,
+        "mu_const_median_yr": 4.0
+      },
+      "M2_tempo_lag": {
+        "description": "Time-varying mu_H(t) = mu0 + mu1*(year-t0)",
+        "level_rmse_median": 0.434,
+        "change_rmse_median": 0.405,
+        "mu_H1_median_yr_per_yr": 0.15
+      }
+    },
+    "key_findings": {
+      "M1_beats_M0_level_pct": 69,
+      "M2_beats_M0_level_pct": 77,
+      "M2_beats_M0_change_pct": 87,
+      "M2_beats_M1_pct": 95,
+      "M0_to_M1_rmse_reduction_pct": 14,
+      "M0_to_M2_rmse_reduction_pct": 15
+    },
+    "interpretation": "M2 beats M1 in 95% of countries, confirming that the spending-to-outcome lag is not constant but drifts over time. Median drift mu_H1 = +0.15 yr/yr means the lag lengthens by ~1.5 years per decade, consistent with the shift from acute to chronic disease management and longer R&D-to-outcome cycles."
+  },
+  "three_layer_analogy": [
+    {
+      "concept": "Flow (quantum)",
+      "population": "TFR (period fertility rate)",
+      "gdp": "I/GDP (investment rate)",
+      "healthcare": "E/GDP (health spending rate)"
+    },
+    {
+      "concept": "Tempo (timing lag)",
+      "population": "MAC (mean age at childbearing)",
+      "gdp": "mu (investment-to-output lag)",
+      "healthcare": "mu_H (spending-to-outcome lag)"
+    },
+    {
+      "concept": "Forgotten parameter",
+      "population": "sigma (parity variance)",
+      "gdp": "beta (intangible capital share)",
+      "healthcare": "lambda_b (composition multipliers)"
+    },
+    {
+      "concept": "Stock",
+      "population": "Cohort size N(t)",
+      "gdp": "Capital stock K(t)",
+      "healthcare": "Health capital H(t)"
+    },
+    {
+      "concept": "Tempo drift (mu_1)",
+      "population": "+0.05 yr/yr (MAC shift)",
+      "gdp": "+0.04 yr/yr (time-to-build)",
+      "healthcare": "+0.15 yr/yr (spending-to-outcome)"
+    },
+    {
+      "concept": "Effect size vs M0",
+      "population": "Large (TFR bias ~15-20%)",
+      "gdp": "Small (MAPE -0.6 pp)",
+      "healthcare": "Medium (RMSE -15%)"
+    },
+    {
+      "concept": "Identity",
+      "population": "Renewal equation",
+      "gdp": "dW/dt = S(Y) - delta*W",
+      "healthcare": "dH/dt = sum(lambda_b*E_b) - delta_H*H"
+    }
+  ],
+  "key_insight": "The healthcare_tempo_poc (model specification A-H, 39 countries) shows that treating health spending as a stock-building flow with a time-varying lag mu_H(t) reduces life-expectancy prediction RMSE from 0.510 to 0.434 years (-15%). M2 beats M1 in 95% of countries, confirming that the lag is not constant but drifts at +0.15 yr/yr.",
+  "policy_implication": "A 'neutral' sustainability criterion must account for both channels: (1) the contemporaneous fiscal multiplier effect (I-O: does tax revenue from healthcare-induced economic activity cover public financing?), and (2) the intertemporal health-capital accumulation effect (tempo: does the stock of health built today justify the flow of spending?). Neither alone gives a complete picture.",
+  "us_japan_contrast": "The US has high spending (17% GDP) but a low I-O multiplier (1.7), suggesting leakage through high drug prices and administrative costs. Japan has moderate spending (11% GDP) but the highest multiplier (2.78) and a fiscal return ratio above 1.0 (1.09). Through the tempo lens, the US pattern -- high flow, low stock accumulation -- mirrors 'high TFR, low cohort fertility' in demography: a tempo-inflated flow that overstates true investment in health capital.",
+  "three_layer_connection": "The tempo-plus-forgotten-parameter framework originated in demography (Bongaarts-Feeney 1998, Goldstein-Lutz-Scherbov 2003), was ported to capital accounting (Onishi 2026b), and is here extended to healthcare. Healthcare shows the largest tempo drift (+0.15 yr/yr vs GDP +0.04) among the three layers."
+}

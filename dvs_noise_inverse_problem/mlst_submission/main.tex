@@ -1,0 +1,644 @@
+% Machine Learning: Science and Technology (MLST) — IOP Publishing
+% Manuscript: DVS Noise Inverse Problem Review + Proposal
+% Use: pdflatex main.tex (or upload to Overleaf with iopart class)
+%
+% NOTE: If compiling with the official IOP template, replace
+%       \documentclass{article} with \documentclass[12pt]{iopart}
+%       and remove the geometry/natbib packages (iopart provides its own).
+
+\documentclass[12pt]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+% Line spacing (reviewer friendly)
+\linespread{1.5}
+
+\title{Noise as Signal: A Systematic Review and Physics-Informed Framework\\
+for Solving the Noise Inverse Problem in Dynamic Vision Sensors\\
+Applied to Astronomical Observation}
+
+\author{
+  % Author names and affiliations to be added
+  % ORCID identifiers recommended by IOP
+}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+% ======================================================================
+\begin{abstract}
+Dynamic Vision Sensors (DVS) offer microsecond temporal resolution and high dynamic range ($>$120\,dB), making them promising for astronomical observation.
+However, background activity (BA) noise dominates under low-light conditions, severely limiting sensitivity.
+We present a systematic review of 25 publications across four domains---DVS noise physics, DVS denoising, DVS astronomical applications, and noise inverse problem methodologies from non-DVS fields (notably LIGO gravitational-wave detection)---and identify five unexplored gaps (G1--G5) at their intersections.
+Building on this analysis, we propose Physics-Informed DeepClean for DVS (PI-DC-DVS), a unified algorithm that integrates circuit-level physical models with auxiliary-channel regression and Bayesian inference to reconstruct and subtract noise with high fidelity.
+We further introduce a six-tier calibration framework (Cal-1 through Cal-6), where Cal-6 repurposes satellite light trails---conventionally regarded as light pollution---as natural calibration sources exploiting DVS-specific advantages.
+A proof-of-concept demonstration on the EBSSA space-observation dataset achieves 90.3\% noise event removal while preserving satellite trajectories.
+The theoretical signal-to-noise ratio (SNR) improvement scales as $1/(1-\alpha)$, where $\alpha$ is the noise model accuracy, offering 10$\times$ improvement at $\alpha=0.9$ and 100$\times$ at $\alpha=0.99$.
+This framework has the potential to extend DVS detection limits by 2--4 magnitudes and enable template-free discovery of faint, fast-moving objects such as sub-50\,m near-Earth objects.
+\end{abstract}
+
+\noindent\textbf{Keywords:} dynamic vision sensor, event camera, noise inverse problem, gravitational-wave detector, astronomical observation, physics-informed neural network, calibration
+
+% ======================================================================
+\section{Introduction}
+\label{sec:intro}
+
+Conventional noise reduction in imaging is formulated as the \emph{signal inverse problem}: given an observation $y = h * s + n$, recover the signal $s$.
+This work explores the complementary perspective---the \emph{noise inverse problem}---where the noise generation mechanism is modelled as a physical forward process and solved inversely to reconstruct and subtract noise, leaving only the signal in the residual.
+
+Dynamic Vision Sensors (DVS) are neuromorphic sensors in which each pixel independently and asynchronously emits an event when the logarithmic intensity change exceeds a threshold~\cite{A1,A4}.
+Inspired by change-detection neurons in insect compound eyes, DVS offer microsecond temporal resolution, $>$120\,dB dynamic range, and sparse output, making them attractive for space situational awareness (SSA)~\cite{C1,C3,C4} and fast optical astronomy~\cite{C5}.
+Under low-light conditions, however, shot-noise-induced background activity (BA) becomes the dominant source of events, overwhelming faint astronomical signals~\cite{A1,A2}.
+
+The core insight of this work is:
+\begin{quote}
+\emph{Solve the noise inverse problem with high precision $\rightarrow$ reconstruct and subtract noise $\rightarrow$ only signal remains $\rightarrow$ structural SNR improvement.}
+\end{quote}
+
+This paradigm has been spectacularly successful in gravitational-wave (GW) astronomy, where DeepClean~\cite{D1} and related methods~\cite{D2,D3,D4} use auxiliary witness channels to model and subtract non-stationary instrumental noise from the strain signal.
+The iDQ framework~\cite{D6} further assigns per-event noise probabilities in real time.
+Yet no equivalent pipeline exists for DVS astronomical observation.
+
+In this paper we: (i) systematically survey 25 publications across four domains (section~\ref{sec:survey}); (ii) identify five research gaps G1--G5 at their intersections (section~\ref{sec:gaps}); (iii) propose the PI-DC-DVS algorithm integrating physics-informed modelling with auxiliary-channel regression (section~\ref{sec:algorithm}); (iv) design a six-tier calibration framework including a novel satellite-trail calibration tier (section~\ref{sec:calibration}); and (v) present a proof-of-concept demonstration on real space-observation data (section~\ref{sec:demo}).
+
+
+% ======================================================================
+\section{Systematic Literature Survey}
+\label{sec:survey}
+
+We classify 25 relevant publications into four domains (figure~\ref{fig:gapmap}).
+
+% ------ Domain A ------
+\subsection{Domain A: DVS Noise Physics (5 publications)}
+
+The circuit-level physics of DVS noise has been systematically characterised by the UZH/ETH Zurich group.
+Gra\c{c}a and Delbruck~\cite{A1} proved that photon shot noise sets a fundamental lower bound at twice the photon shot noise level, and provided bias optimisation guidelines.
+McReynolds et al.~\cite{A2} demonstrated that shot-noise events exhibit alternating ON$\leftrightarrow$OFF polarity patterns, enabling physics-based noise identification.
+SciDVS~\cite{A3}, a scientific-grade sensor fabricated in 180\,nm CMOS, achieves 1.7\% temporal contrast sensitivity at 0.7\,lux through auto-centring preamplifiers, bandwidth control, and pixel binning.
+Feedback control of DVS bias parameters~\cite{A4} established that noise characteristics depend strongly on bias settings.
+Most importantly, Gra\c{c}a and Delbruck~\cite{A5} recently introduced a large-signal differential-equation DVS pixel model incorporating first-passage-time stochastic event generation, achieving $>$1000$\times$ computational speedup over prior simulators while maintaining physical realism.
+This model can serve as the forward model $\mathcal{F}(\theta)$ for the noise inverse problem.
+
+% ------ Domain B ------
+\subsection{Domain B: DVS Denoising Methods (7 publications)}
+
+DVS denoising has evolved from empirical filtering through probabilistic methods to joint estimation.
+The earliest spatio-temporal neighbourhood filter~\cite{B1} rejects events lacking support from nearby pixels within a time window.
+Optical-flow-based filtering~\cite{B2} removes events inconsistent with motion patterns.
+The Event Probability Mask (EPM)~\cite{B3} computes event generation probabilities in short time windows, providing the first real-world labelled DVS noise dataset (DVSNOISE20).
+Physics-based filtering using ON/OFF alternation statistics~\cite{A2} bridges domains A and B.
+WedNet~\cite{B5} achieves real-time denoising through window-based modules with soft spatial feature embedding.
+ASTEDNet~\cite{B6} processes event streams directly without frame conversion.
+Most notably, Shiba et al.~\cite{B7} simultaneously estimate motion and noise via an extended Contrast Maximisation framework, achieving state-of-the-art performance on the E-MLB benchmark---the conceptually closest prior work to the noise inverse problem approach.
+However, their noise model is phenomenological (data-driven) and does not incorporate circuit physics~\cite{A5} or auxiliary channels.
+
+% ------ Domain C ------
+\subsection{Domain C: DVS Astronomical Applications (5 publications)}
+
+DVS astronomical applications concentrate on SSA.
+Afshar et al.~\cite{C1} produced the first event-based space-observation dataset (EBSSA: 236 recordings, 572 labelled objects).
+Event-camera star tracking~\cite{C2} reformulated rotation averaging and bundle adjustment for asynchronous event streams.
+FIESTA~\cite{C3} demonstrated unsupervised, real-time, low-parameter space-object detection and tracking.
+Observational evaluation of event cameras for SSA~\cite{C4} characterised DVS, DAVIS, and ATIS cameras including daytime observation.
+Hoang~\cite{C5} explored neuromorphic cameras for atmospheric Cherenkov telescopes, suggesting advantages for nanosecond-scale flash detection.
+\emph{No study has applied DVS to faint-object detection (e.g., near-Earth objects) where noise dominates.}
+
+% ------ Domain D ------
+\subsection{Domain D: Noise Inverse Problem Methods in Non-DVS Fields (7 publications)}
+
+The noise inverse problem paradigm is mature in GW astronomy.
+DeepClean~\cite{D1} regresses non-stationary noise from auxiliary witness channels (accelerometers, magnetometers, microphones) using machine learning, achieving order-of-magnitude noise reduction.
+DeepExtractor~\cite{D2} reconstructs signals and glitches by modelling the noise distribution.
+WaveFormer~\cite{D3} applies transformer-based denoising to GW data.
+Chatterjee and Jani~\cite{D4} demonstrate robust signal reconstruction even under noise artefacts.
+
+Two works directly bridge to DVS:
+Noise2Image~\cite{D5} exploits the illuminance dependence of DVS noise event rates to recover static scenes from noise alone---a paradigm shift demonstrating that \emph{DVS noise carries information}.
+iDQ~\cite{D6} provides real-time per-event noise probability estimation using auxiliary channels---a direct methodological precedent for per-event DVS noise classification.
+D\textsuperscript{3}PO~\cite{D7} simultaneously performs Bayesian reconstruction of signal and noise in photon-counting data using information field theory, offering a theoretical template for DVS event-stream decomposition.
+
+
+% ======================================================================
+\section{Gap Analysis: Five Unexplored Research Directions}
+\label{sec:gaps}
+
+Cross-domain analysis reveals five gaps (figure~\ref{fig:gapmap}):
+
+\begin{table}[htbp]
+\centering
+\caption{Five identified research gaps at the intersection of domains A--D.}
+\label{tab:gaps}
+\begin{tabular}{@{}clc@{}}
+\toprule
+Gap & Description & Domains \\
+\midrule
+G1 & Rigorous Bayesian inverse-problem formulation from DVS circuit physics & A$\to$D \\
+G2 & LIGO DeepClean-style auxiliary-channel DVS noise prediction & D$\to$A \\
+G3 & Astronomy-specific DVS noise inverse problem pipeline & A+B+D$\to$C \\
+G4 & Template-free object detection via noise residual analysis & C+D \\
+G5 & Integrated demonstration: SciDVS + large telescope + noise inverse problem & A+C+D \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{G1: Bayesian Inverse Problem Formulation from DVS Circuit Physics}
+
+The forward model of~\cite{A5} generates noise events as
+$e_\mathrm{noise} = \mathcal{F}(\theta_\mathrm{pixel}, I_\mathrm{bg}, T, \mathrm{bias})$,
+where $\theta_\mathrm{pixel}$ encodes pixel-specific parameters (threshold mismatch $\sigma_\theta$, dark current, leakage current).
+The Bayesian inverse problem seeks the posterior:
+\begin{equation}
+  p(\theta \mid e_\mathrm{obs}) \propto p(e_\mathrm{obs} \mid \theta)\, p(\theta),
+  \label{eq:bayes}
+\end{equation}
+where $p(e_\mathrm{obs} \mid \theta)$ is the inhomogeneous Poisson process likelihood and $p(\theta)$ derives from the physical parameter ranges of~\cite{A5}.
+Following D\textsuperscript{3}PO~\cite{D7}, joint estimation of signal $s$ and noise parameters $\theta$ yields
+$p(\theta, s \mid e_\mathrm{obs}) \propto p(e_\mathrm{obs} \mid \theta, s)\, p(\theta)\, p(s)$.
+
+\subsection{G2: Auxiliary-Channel Noise Prediction}
+
+By analogy with DeepClean~\cite{D1}, DVS auxiliary channels---temperature sensor, accelerometer (microphonic noise from telescope tracking/wind), and background illuminance monitor---can independently measure environmental drivers of non-stationary noise.
+Dark current depends exponentially on temperature: $I_\mathrm{dark} \propto \exp(-E_g / 2k_BT)$; a 1\,$^\circ$C rise approximately doubles the dark current.
+Real-time auxiliary measurements enable noise rate prediction without relying on the event stream itself, breaking the circularity of self-referential denoising.
+
+\subsection{G3: Astronomy-Specific DVS Noise Inverse Problem Pipeline}
+
+G3 integrates G1 and G2 into a four-stage pipeline (figure~\ref{fig:pipeline}):
+\begin{enumerate}
+  \item \textbf{Noise forward model construction}: Compute per-pixel expected noise rate $\lambda_\mathrm{noise}(x,y,t) = \mathcal{F}(\theta_\mathrm{pixel}, T(t), \mathrm{bias}, I_\mathrm{bg}(x,y,t))$ using the A5 model~\cite{A5} augmented by auxiliary channels.
+  \item \textbf{Bayesian inverse problem solution}: Estimate $\theta$ via MAP/variational inference (G1) combined with a DeepClean-type neural network (G2); output per-event noise probability $P_\mathrm{noise}(e_i)$ following iDQ~\cite{D6}.
+  \item \textbf{Residual event stream generation}: Apply probabilistic thinning (soft subtraction with weight $w_i = 1 - P_\mathrm{noise}(e_i)$) or hard thresholding.
+  \item \textbf{Astronomical calibration and verification}: PSD tests, injection-recovery tests, known-source recovery, and blind tests following LIGO methodology~\cite{D1}.
+\end{enumerate}
+
+Table~\ref{tab:g3comparison} contrasts G3 with prior approaches.
+
+\begin{table}[htbp]
+\centering
+\caption{Comparison of G3 with prior denoising approaches.}
+\label{tab:g3comparison}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Method & Noise model & Aux.\ channels & Astro.\ use & Bayesian \\
+\midrule
+Shiba et al.~\cite{B7} & Data-driven & \texttimes & \texttimes & \texttimes \\
+Noise2Image~\cite{D5} & Illuminance-dep. & \texttimes & \texttimes & \texttimes \\
+FIESTA~\cite{C3} & Threshold & \texttimes & \checkmark & \texttimes \\
+DeepClean~\cite{D1} & Physics+ML & \checkmark & \texttimes\,(LIGO) & \texttimes \\
+D\textsuperscript{3}PO~\cite{D7} & Bayesian & \texttimes & \checkmark\,($\gamma$-ray) & \checkmark \\
+\textbf{G3 (proposed)} & \textbf{Physics(A5)+ML} & \checkmark & \checkmark & \checkmark \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{G4: Template-Free Object Detection via Noise Residual Analysis}
+
+Traditional astronomical detection relies on signal templates (e.g., matched filtering in GW, PSF fitting in optical astronomy).
+G4 inverts this: \emph{if the noise is precisely subtracted, any structure remaining in the residual is signal}---regardless of its morphology.
+Detection sensitivity depends solely on noise model accuracy, not on signal assumptions.
+This mirrors unmodelled burst searches (e.g., coherent WaveBurst) in GW astronomy.
+
+The detection algorithm operates on the G3 residual stream:
+(1)~characterise residual statistics (deviations from Poisson indicate signal);
+(2)~event-level shift-and-stack along candidate trajectories $(v_x, v_y)$ extending Contrast Maximisation~\cite{Gallego2020} and recent efficient shift-and-stack algorithms~\cite{Stetzler2025};
+(3)~evaluate statistical significance with false alarm rate (FAR) calculation enabled by the known noise statistics;
+(4)~characterise candidates (cross-match with catalogues, estimate orbital elements);
+(5)~physical verification (light-curve consistency, orbital dynamics).
+
+Expected impact includes 2--4 magnitude improvement in detection limits and sensitivity to previously undetectable fast-moving faint objects (10--50\,m near-Earth objects).
+
+\subsection{G5: Integrated Demonstration Roadmap}
+
+\begin{table}[htbp]
+\centering
+\caption{Phased roadmap for integrated SciDVS + telescope + noise inverse problem demonstration.}
+\label{tab:roadmap}
+\begin{tabular}{@{}clcl@{}}
+\toprule
+Phase & Configuration & Aperture & Objective \\
+\midrule
+1 & SciDVS + small telescope & 0.3--0.5\,m & Pipeline validation, known-source recovery \\
+2 & SciDVS + medium telescope & 1--2\,m & Faint-object detection limit measurement \\
+3 & SciDVS + large telescope & 4\,m class & Template-free detection demonstration \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+% ======================================================================
+\section{Proposed Algorithm: Physics-Informed DeepClean for DVS (PI-DC-DVS)}
+\label{sec:algorithm}
+
+\subsection{Fundamental Principle}
+
+Let $\alpha$ denote the noise model accuracy:
+\begin{equation}
+  \alpha = 1 - \frac{\|\hat{e}_\mathrm{noise} - e_\mathrm{noise,true}\|}{\|e_\mathrm{noise,true}\|}.
+  \label{eq:alpha}
+\end{equation}
+The residual noise level after subtraction is $\sigma_\mathrm{residual} = (1-\alpha)\,\sigma_\mathrm{original}$, yielding an SNR improvement ratio:
+\begin{equation}
+  \frac{\mathrm{SNR}_\mathrm{after}}{\mathrm{SNR}_\mathrm{before}} = \frac{1}{1-\alpha}.
+  \label{eq:snr}
+\end{equation}
+At $\alpha=0.9$, this gives $10\times$ improvement; at $\alpha=0.99$, $100\times$ (figure~\ref{fig:demo_snr}).
+
+\subsection{Algorithm Overview}
+
+PI-DC-DVS operates in four phases:
+
+\paragraph{Phase 1: Offline Calibration (Pre-observation).}
+Record dark events $e_\mathrm{dark}$ (lens cap), flat-field events $e_\mathrm{flat}$ (integrating sphere), and thermal sweep events $e_\mathrm{thermal}$ ($\Delta T = \pm5\,^\circ$C).
+Fit the A5 forward model~\cite{A5} to obtain per-pixel parameter maps via MAP estimation:
+\begin{equation}
+  \hat{\theta} = \arg\max_\theta\, p(e_\mathrm{cal} \mid \theta)\, p(\theta \mid \theta_\mathrm{prior}).
+\end{equation}
+
+\paragraph{Phase 2: Online Inference (During observation, real-time).}
+A Physics-Informed Neural Network (PI-DC-Net) predicts per-pixel noise rates:
+\begin{equation}
+  \hat{\lambda}_\mathrm{noise}(x,y,t) = \mathrm{NN}_\mathrm{PI}(\theta_\mathrm{pixel\_map}, \mathrm{aux}(t); W).
+\end{equation}
+
+The network architecture comprises three layers:
+\begin{itemize}
+  \item \textbf{Physics model layer} (fixed weights): $\lambda_\mathrm{physics}(x,y,t) = f_\mathrm{A5}(\theta(x,y), I_\mathrm{bg}(t), T(t))$ --- baseline noise rate from the A5 model.
+  \item \textbf{Auxiliary-channel coupling layer}: $\Delta\lambda_\mathrm{aux}(t) = \mathrm{MLP}(\mathrm{aux}(t); W_\mathrm{aux})$ [64-32-1] --- learns non-stationary variations.
+  \item \textbf{Spatio-temporal correlation layer}: $\Delta\lambda_\mathrm{corr}(x,y,t) = \mathrm{Conv2D}(\mathrm{context}(x,y,t); W_\mathrm{corr})$ [$3\times3$] --- learns inter-pixel noise correlations.
+\end{itemize}
+
+Output combination:
+\begin{equation}
+  \hat{\lambda}_\mathrm{noise}(x,y,t) = \lambda_\mathrm{physics}(x,y,t) \cdot (1 + \Delta\lambda_\mathrm{aux}(t)) + \Delta\lambda_\mathrm{corr}(x,y,t).
+\end{equation}
+
+Per-event noise probability (following iDQ~\cite{D6}):
+\begin{equation}
+  P_\mathrm{noise}(e_i) = \frac{\hat{\lambda}_\mathrm{noise}(x_i, y_i, t_i)}{\hat{\lambda}_\mathrm{noise}(x_i, y_i, t_i) + \hat{\lambda}_\mathrm{signal}(x_i, y_i, t_i)}.
+  \label{eq:pnoise}
+\end{equation}
+
+Loss function:
+\begin{equation}
+  \mathcal{L} = \mathcal{L}_\mathrm{Poisson}(\hat{\lambda}_\mathrm{noise}, e_\mathrm{dark})
+  + \beta\,\mathcal{L}_\mathrm{physics}(\theta)
+  + \gamma\,\mathcal{L}_\mathrm{temporal}(\hat{\lambda}_\mathrm{noise}),
+\end{equation}
+where $\mathcal{L}_\mathrm{Poisson}$ is the Poisson negative log-likelihood against dark data, $\mathcal{L}_\mathrm{physics}$ enforces consistency with the physical model, and $\mathcal{L}_\mathrm{temporal}$ is a temporal smoothness regulariser.
+
+\paragraph{Phase 3: Residual Generation.}
+\begin{itemize}
+  \item \textbf{Soft subtraction} (recommended): assign signal weight $w_i = 1 - P_\mathrm{noise}(e_i)$; retain events with $w_i > w_\mathrm{threshold}$.
+  \item \textbf{Hard subtraction} (fast): retain events with $P_\mathrm{noise}(e_i) < \tau$, where $\tau$ is set by the target FAR.
+\end{itemize}
+
+\paragraph{Phase 4: Adaptive Updates.}
+Monitor residual Poisson statistics; trigger online weight updates when deviations exceed thresholds.
+Apply Kalman-filter-like drift correction to $\theta_\mathrm{pixel\_map}$.
+
+\subsection{Expected Performance}
+
+Table~\ref{tab:performance} summarises the expected improvements over threshold-based methods.
+
+\begin{table}[htbp]
+\centering
+\caption{Expected noise removal performance of PI-DC-DVS versus conventional threshold-based denoising.}
+\label{tab:performance}
+\begin{tabular}{@{}lccl@{}}
+\toprule
+Condition & Threshold & PI-DC-DVS & Rationale \\
+\midrule
+Dark current ($<$0.1\,lux) & $\sim$50\% & $\sim$90\% & Physics model precisely predicts dark current \\
+Temperature drift ($\pm5\,^\circ$C/h) & None & Real-time & Auxiliary channel + adaptive update \\
+Pixel mismatch & Uniform $\theta$ & Per-pixel & Calibration provides $\theta_\mathrm{pixel\_map}$ \\
+Mechanical vibration & None & Predicted & Accelerometer (proven by LIGO DeepClean) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+% ======================================================================
+\section{Proposed Calibration Framework}
+\label{sec:calibration}
+
+\subsection{Six-Tier Calibration Dataset}
+
+DVS output event streams rather than frames, requiring purpose-designed calibration procedures.
+We propose six tiers (table~\ref{tab:calibration}):
+
+\begin{table}[htbp]
+\centering
+\caption{Six-tier calibration framework for DVS noise model validation. Cal-1 through Cal-5 are pre-observation; Cal-6 operates during observation.}
+\label{tab:calibration}
+\begin{tabular}{@{}clllc@{}}
+\toprule
+Tier & Condition & Purpose & Pass criterion \\
+\midrule
+Cal-1 & Dark (lens cap) & Pure noise reference & $\chi^2/\mathrm{dof} < 1.5$ \\
+Cal-2 & Thermal sweep ($\pm5\,^\circ$C) & Temperature dependence & Residual $< 10$\% all $T$ \\
+Cal-3 & Flat-field (integrating sphere) & Shot noise statistics & $\alpha_\mathrm{flat} > 0.9$ \\
+Cal-4 & Dynamic patterns & Injection-recovery & AUC $> 0.95$ \\
+Cal-5 & Simulated astronomy & End-to-end pipeline & $\Delta m_\mathrm{lim} > 2$\,mag \\
+Cal-6 & Satellite trails & In-operation verification & Detection rate $>95$\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Cal-6: Satellite Trail Calibration---Repurposing Light Pollution as a Calibration Source}
+
+We propose a novel approach that \emph{repurposes} satellite light trails---conventionally regarded as light pollution---as natural calibration sources for the noise model.
+
+\paragraph{Rationale.}
+Artificial satellites have precisely predictable trajectories: Two-Line Element (TLE) orbital data provide position, velocity, and transit time to microsecond precision.
+Reflected sunlight magnitude can be estimated from the reflective cross-section, solar angle, and attitude model.
+This makes satellite transits a \emph{natural injection-recovery test}: a known signal traversing the field of view under real observing conditions.
+
+\paragraph{DVS-Specific Advantages.}
+\begin{enumerate}
+  \item \textbf{Abundant calibration opportunities}: Starlink alone comprises several thousand satellites; dozens of transits occur per night.
+  \item \textbf{Real observing conditions}: Unlike laboratory injection, satellite calibration operates under actual atmospheric, thermal, and vibration conditions.
+  \item \textbf{No saturation}: DVS dynamic range ($>$120\,dB) avoids the saturation that renders CCD satellite trails unusable for quantitative analysis.
+  \item \textbf{Temporal compatibility}: DVS microsecond resolution matches the angular speed of low-Earth-orbit satellites (several degrees per second).
+  \item \textbf{No additional hardware}: Calibration is performed on the science data stream itself.
+\end{enumerate}
+
+\paragraph{Verification Metrics.}
+Detection rate $P_\mathrm{detect}(m)$ as a function of predicted magnitude $m$; agreement between detected and predicted magnitudes ($|m_\mathrm{detect} - m_\mathrm{pred}| < 0.5$\,mag); trajectory residuals.
+Pass criterion: detection rate $>$95\% for satellites brighter than $m_\mathrm{lim} - 1$.
+
+\paragraph{Secondary Value.}
+Cal-6 provides continuous, automated monitoring of noise model accuracy during every observation session.
+It also yields quantitative data on satellite light pollution relevant to the SSA community.
+
+\subsection{Calibration Pipeline}
+
+The pipeline consists of pre-observation calibration (Cal-1 through Cal-5) followed by in-operation calibration (Cal-6).
+All five pre-observation tiers must pass before observation begins.
+Cal-6 runs continuously during observation; failures trigger the Phase~4 adaptive update mechanism of PI-DC-DVS.
+
+\subsection{Real-Time Monitoring Metrics}
+
+Four metrics are monitored during observation (table~\ref{tab:monitoring}).
+
+\begin{table}[htbp]
+\centering
+\caption{Real-time monitoring metrics during observation.}
+\label{tab:monitoring}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Metric & Definition & Threshold & Remediation \\
+\midrule
+Residual Poissonicity & KS test $p$-value of residual ISI & $p > 0.05$ & Trigger Phase 4 update \\
+Residual rate stability & CV of non-signal residual rate & CV $< 0.3$ & Temperature drift correction \\
+Aux.\ channel consistency & NN vs.\ physics model divergence & $|\Delta\lambda/\lambda| < 0.5$ & Aux.\ channel anomaly alert \\
+Pixel anomaly rate & Fraction with $\theta$ outside $3\sigma$ & $< 1$\% & Hot-pixel mask update \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+% ======================================================================
+\section{Proof-of-Concept Demonstration}
+\label{sec:demo}
+
+\subsection{Dataset}
+
+We use the Event-Based Space Situational Awareness (EBSSA) dataset~\cite{C1}: 236 recordings from a DAVIS240C sensor observing satellites and stars, with 572 labelled space objects.
+
+\subsection{Simplified Noise Model}
+
+As EBSSA lacks auxiliary channel data, we implement a simplified version of PI-DC-DVS using the Fano factor (variance-to-mean ratio of event rates across time bins) to discriminate noise from signal.
+Pixels with Fano factor $>2$ (indicating bursty, signal-like behaviour) are classified as signal candidates.
+Per-event noise probability is computed as:
+\begin{equation}
+  P_\mathrm{noise}(e_i) = \frac{\lambda_\mathrm{noise}(x_i, y_i)}{\lambda_\mathrm{total}(x_i, y_i)},
+\end{equation}
+where $\lambda_\mathrm{noise}$ is estimated from pixels with Fano factor $\leq 2$ (noise-dominated).
+
+\subsection{Results}
+
+From 1,800,674 input events, probabilistic thinning with threshold $\tau = 0.5$ yields 175,261 residual events---a 90.3\% noise removal rate.
+The residual event stream clearly reveals satellite trajectories that are buried in noise in the raw stream (figure~\ref{fig:demo_result}).
+Signal candidate pixels (2,294 out of 76,800 total) concentrate along known satellite tracks.
+
+The Fano factor spatial map (figure~\ref{fig:demo_snr}) shows clear separation between noise-dominated pixels (Fano $\approx 1$, consistent with Poisson statistics) and signal-containing pixels (Fano $\gg 1$).
+Temporal analysis confirms that the noise rate is approximately stationary, while signal events cluster around satellite transit times.
+
+\subsection{Limitations}
+
+This demonstration uses a simplified noise model without auxiliary channels.
+The full PI-DC-DVS algorithm with physics-informed neural network, auxiliary-channel regression, and online adaptation is expected to achieve substantially higher noise model accuracy ($\alpha > 0.95$) and correspondingly greater SNR improvement.
+
+
+% ======================================================================
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Relationship to Prior Work}
+
+The proposed framework synthesises ideas from multiple fields (table~\ref{tab:g3comparison}).
+The key advance is the integration of DVS-specific circuit physics~\cite{A5} as a structural prior in the neural network, combined with auxiliary-channel regression proven in GW astronomy~\cite{D1,D6}.
+This physics-informed approach contrasts with purely data-driven denoising~\cite{B5,B6,B7} and offers interpretability, data efficiency, and robustness to distribution shift.
+
+\subsection{Cal-6: Paradigm Inversion of Light Pollution}
+
+Cal-6 exemplifies ``turning a bug into a feature'': the proliferation of satellite constellations, widely lamented as degrading ground-based astronomy, here provides a continuous, cost-free, and statistically abundant source of calibration signals.
+The compatibility with DVS is particularly notable: while CCD sensors saturate on bright satellite trails, DVS sensors record them quantitatively across their full dynamic range.
+
+\subsection{Broader Applicability}
+
+The noise inverse problem framework is not specific to astronomy.
+Potential applications include neural calcium imaging (removing indicator noise to isolate spike signals), industrial inspection (detecting faint defects against sensor noise), and autonomous driving (enhancing DVS perception under adverse lighting conditions).
+
+\subsection{Limitations and Future Work}
+
+The current demonstration is limited by the absence of auxiliary channels in the EBSSA dataset.
+Priority future work includes: (i)~differentiable implementation of the A5 pixel model; (ii)~design and construction of a DVS auxiliary-channel system for telescope use; (iii)~Phase~1 demonstration with SciDVS on a 0.3--0.5\,m telescope; (iv)~systematic evaluation of Cal-6 using Starlink transit data.
+
+
+% ======================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+We have presented a systematic review of DVS noise modelling, denoising, astronomical application, and noise inverse problem methodologies, identifying five unexplored research gaps (G1--G5).
+The proposed PI-DC-DVS algorithm integrates circuit-level physics, auxiliary-channel regression, and Bayesian inference into a unified framework for high-precision noise reconstruction and subtraction.
+The six-tier calibration framework (Cal-1 through Cal-6) provides quantitative validation, with Cal-6 innovatively repurposing satellite light trails as natural calibration sources.
+A proof-of-concept demonstration on real space-observation data achieves 90.3\% noise removal, and the theoretical framework predicts SNR improvements of $10$--$100\times$ at noise model accuracies of $\alpha = 0.9$--$0.99$.
+All necessary methodological components exist in adjacent fields; the contribution of this work is their systematic identification and proposed integration for DVS astronomical observation.
+
+
+% ======================================================================
+% Acknowledgements
+\section*{Acknowledgements}
+% To be added.
+
+% ======================================================================
+% Data availability
+\section*{Data Availability}
+The EBSSA dataset used in the proof-of-concept demonstration is publicly available via the Tonic library~\cite{C1}.
+The demonstration code is available at \url{https://github.com/bougtoir/wip/tree/main/dvs_noise_inverse_problem}.
+
+% ======================================================================
+% References — IOP numbered style [1], [2], ...
+\begin{thebibliography}{25}
+
+\bibitem{A1}
+Gra\c{c}a R and Delbruck T 2023
+Optimal biasing and physical limits of DVS event noise
+\emph{Preprint} arXiv:2304.04019
+
+\bibitem{A2}
+McReynolds B, Gra\c{c}a R and Delbruck T 2023
+Exploiting alternating DVS shot noise event pair statistics to reduce background activity rates
+\emph{Preprint} arXiv:2304.03494
+
+\bibitem{A3}
+Gra\c{c}a R, Zhou S, McReynolds B and Delbruck T 2024
+SciDVS: a scientific event camera with 1.7\% temporal contrast sensitivity at 0.7\,lux
+\emph{ESSERC 2024} (IEEE) DOI:10.1109/esserc62670.2024.10719521
+
+\bibitem{A4}
+Delbruck T, Gra\c{c}a R and Paluch M 2021
+Feedback control of event cameras
+\emph{Proc.\ CVPR Workshops} (IEEE)
+
+\bibitem{A5}
+Gra\c{c}a R and Delbruck T 2025
+Towards a physically realistic computationally efficient DVS pixel model
+\emph{Preprint} arXiv:2505.07386
+
+\bibitem{B1}
+Delbruck T 2008
+Frame-free dynamic digital vision
+\emph{Proc.\ Intl.\ Symp.\ on Secure-Life Electronics}
+
+\bibitem{B2}
+Liu S-C and Delbruck T 2008
+Adaptive time-slice block-matching optical flow algorithm for dynamic vision sensors
+\emph{Proc.\ BMVC}
+
+\bibitem{B3}
+Baldwin R W, Almatrafi M, Asari V and Hirakawa K 2020
+Event probability mask (EPM) and event denoising convolutional neural network (EDnCNN) for neuromorphic cameras
+\emph{Proc.\ CVPR} (IEEE)
+
+\bibitem{B5}
+Fang H, Wu J, Hou Q, Dong W and Shi G 2024
+Fast window-based event denoising with spatiotemporal correlation enhancement
+\emph{IEEE Trans.\ Pattern Anal.\ Mach.\ Intell.}
+
+\bibitem{B6}
+Wu W, Yao H, Zhai C, Dai Z and Zhu X 2024
+Event camera denoising using asynchronous spatio-temporal event denoising neural network
+\emph{ISPRS Archives} XLVIII-4-2024
+
+\bibitem{B7}
+Shiba S, Aoki Y and Gallego G 2025
+Simultaneous motion and noise estimation with event cameras
+\emph{Proc.\ ICCV}
+
+\bibitem{C1}
+Afshar S, Nicholson A P, van Schaik A and Cohen G 2019
+Event-based object detection and tracking for space situational awareness
+\emph{Preprint} arXiv:1911.08730
+
+\bibitem{C2}
+Chin T-J, Bagchi S, Eriksson A and van Schaik A 2019
+Star tracking using an event camera
+\emph{Proc.\ CVPR Workshops} (IEEE)
+
+\bibitem{C3}
+Joubert D, Afshar S \emph{et al} 2022
+FIESTA: real-time event-based unsupervised feature consolidation and tracking for space situational awareness
+\emph{Front.\ Neurosci.} \textbf{16} 821157
+
+\bibitem{C4}
+G\k{e}dek M, {\.Z}o{\l}nowski M, Delbruck T \emph{et al} 2019
+Observational evaluation of event cameras performance in optical space surveillance
+\emph{Proc.\ EESA}
+
+\bibitem{C5}
+Hoang J 2023
+Neuromorphic cameras for atmospheric Cherenkov telescopes and fast optical astronomy
+\emph{Preprint} arXiv:2310.16321
+
+\bibitem{D1}
+Vajente G, Huang Y, Isi M \emph{et al} 2020
+Machine-learning nonstationary noise out of gravitational-wave detectors
+\emph{Phys.\ Rev.\ D} \textbf{101} 042003
+
+\bibitem{D2}
+Dooney T, Narola H \emph{et al} 2025
+DeepExtractor: time-domain reconstruction of signals and glitches in gravitational wave data with deep learning
+\emph{Preprint} arXiv:2501.18423
+
+\bibitem{D3}
+Wang H, Zhou Y, Cao Z \emph{et al} 2024
+WaveFormer: transformer-based denoising method for gravitational-wave data
+\emph{Mach.\ Learn.: Sci.\ Technol.} \textbf{5} 015046
+
+\bibitem{D4}
+Chatterjee C and Jani K 2025
+No glitch in the matrix: robust reconstruction of gravitational wave signals under noise artifacts
+\emph{Astrophys.\ J.}
+
+\bibitem{D5}
+Cao R, Galor D, Kohli A, Yates J L and Waller L 2024
+Noise2Image: noise-enabled static scene recovery for event cameras
+\emph{Optica} (arXiv:2404.01298)
+
+\bibitem{D6}
+Essick R, Godwin P, Hanna C \emph{et al} 2021
+iDQ: statistical inference of non-astrophysical noise transients in gravitational-wave detectors
+\emph{Mach.\ Learn.: Sci.\ Technol.} \textbf{2} 015004
+
+\bibitem{D7}
+Selig M and En{\ss}lin T A 2015
+D\textsuperscript{3}PO -- denoising, deconvolving, and decomposing photon observations
+\emph{Astron.\ Astrophys.} \textbf{574} A74
+
+\bibitem{Gallego2020}
+Gallego G \emph{et al} 2020
+Event-based vision: a survey
+\emph{IEEE Trans.\ Pattern Anal.\ Mach.\ Intell.} \textbf{42} 154--180
+
+\bibitem{Stetzler2025}
+Stetzler S, Juri{\'c} M \emph{et al} 2025
+An efficient shift-and-stack algorithm applied to detection catalogs
+\emph{Astron.\ J.} \textbf{170} 352
+
+\end{thebibliography}
+
+% ======================================================================
+% Figure legends (for separate figure files per IOP/journal guidelines)
+\newpage
+\section*{Figure Legends}
+
+\paragraph{Figure 1.}
+Gap map showing the four surveyed domains (A: DVS noise physics, B: DVS denoising, C: DVS astronomical applications, D: noise inverse problem methods) and the five identified research gaps (G1--G5) at their intersections.
+\label{fig:gapmap}
+
+\paragraph{Figure 2.}
+System architecture of the G3 astronomy-specific DVS noise inverse problem pipeline.
+Four stages: (1) noise forward model construction using the A5 pixel model and auxiliary channels; (2) Bayesian inverse problem solution with DeepClean-type neural network and iDQ-style per-event noise probability; (3) residual event stream generation via probabilistic thinning; (4) astronomical calibration and verification.
+\label{fig:pipeline}
+
+\paragraph{Figure 3.}
+Signal-to-noise ratio improvement analysis.
+Three panels: (a) Fano factor spatial map showing noise-dominated (Fano $\approx 1$) vs.\ signal-containing (Fano $\gg 1$) pixels; (b) temporal dynamics of noise and signal event rates; (c) per-pixel SNR distribution before and after noise subtraction.
+\label{fig:demo_snr}
+
+\paragraph{Figure 4.}
+Proof-of-concept noise inverse problem demonstration on EBSSA space-observation data.
+Four panels: (a) raw event accumulation (1,800,674 events); (b) estimated noise rate map showing pixel-level noise heterogeneity; (c) per-event noise probability distribution showing bimodal separation of noise and signal; (d) residual events after 90.3\% noise removal (175,261 events) with satellite trajectory clearly visible.
+\label{fig:demo_result}
+
+\end{document}

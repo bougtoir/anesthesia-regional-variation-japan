@@ -1,0 +1,10 @@
+{
+  "port": 3457,
+  "openBrowser": true,
+  "plugins": {
+    "folder-watcher": {
+      "watchPaths": [],
+      "debounceMs": 1000
+    }
+  }
+}

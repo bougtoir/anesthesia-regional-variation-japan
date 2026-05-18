@@ -1,0 +1,8 @@
+concept,population,gdp,healthcare
+Flow (quantum),TFR (period fertility rate),I/GDP (investment rate),E/GDP (health spending rate)
+Tempo (timing lag),MAC (mean age at childbearing),mu (investment-to-output lag),mu_H (spending-to-outcome lag)
+Forgotten parameter,sigma (parity variance),beta (intangible capital share),lambda_b (composition multipliers)
+Stock,Cohort size N(t),Capital stock K(t),Health capital H(t)
+Tempo drift (mu_1),+0.05 yr/yr (MAC shift),+0.04 yr/yr (time-to-build),+0.15 yr/yr (spending-to-outcome)
+Effect size vs M0,Large (TFR bias ~15-20%),Small (MAPE -0.6 pp),Medium (RMSE -15%)
+Identity,Renewal equation,dW/dt = S(Y) - delta*W,dH/dt = sum(lambda_b*E_b) - delta_H*H

@@ -1,0 +1,6 @@
+study,n_countries,period,method,elasticity_h2g,elasticity_g2h,direction,journal
+Ertugrul et al. 2024,38,2000-2019,CS-ARDL / AMG,0.12,0.65,Bidirectional,Front Public Health
+Beylik et al. 2022,21,2000-2018,Driscoll-Kraay,0.08,0.71,Bidirectional,Front Public Health
+Amiri & Ventelou 2012,20,1995-2008,Toda-Yamamoto,,,Bidirectional (Granger),Econ Lett
+Wang 2011,31,1986-2007,Panel VECM,0.1,0.8,Bidirectional,Soc Sci Med
+Piabuo & Tieguhong 2017,45,1995-2015,GMM,0.05,0.55,H->G (developing),BMC Res Notes

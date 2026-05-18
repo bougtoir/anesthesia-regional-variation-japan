@@ -1,0 +1,6 @@
+Model,Description,Growth RMSE median (pp),Growth RMSE IQR (pp),Level MAPE median (\%),OOS MAPE median (\%)
+M0,Instant PIM (Solow baseline),3.095,"[2.03, 3.85]",4.104,4.605
+M1,Constant lag $\mu^\star$,3.087,"[2.01, 3.74]",4.105,4.058
+M2,Time-varying lag $\mu(t)=\mu_0+\mu_1(t-t_0)$,3.065,"[2.01, 3.73]",4.189,3.986
+M3,Instant PIM + intangible $K_I$,3.095,"[2.01, 3.82]",4.068,4.722
+M4,Joint tempo+intangible (GDP \& CWON),3.078,"[2.08, 3.82]",4.062,4.606

@@ -1,0 +1,36 @@
+{
+  "baseline": {
+    "equip_density": 170.9,
+    "import_leakage": 0.050452079566003616,
+    "multiplier": 2.78,
+    "effective_multiplier": 2.63974321880651,
+    "fiscal_return": 1.0370419788168432
+  },
+  "scenario_a": {
+    "equip_density": 48.099999999999994,
+    "import_leakage": 0.050452079566003616,
+    "multiplier": 2.78,
+    "effective_multiplier": 2.497484382965621,
+    "fiscal_return": 0.9811545790222084,
+    "label": "A: OECD-average equipment",
+    "multiplier_adj": 2.630182562902282
+  },
+  "scenario_b": {
+    "equip_density": 170.9,
+    "import_leakage": 0.0,
+    "multiplier": 2.78,
+    "effective_multiplier": 2.78,
+    "fiscal_return": 1.092142857142857,
+    "label": "B: Domestic manufacturing"
+  },
+  "scenario_c": {
+    "equip_density": 48.099999999999994,
+    "import_leakage": 0.0,
+    "multiplier": 2.78,
+    "effective_multiplier": 2.630182562902282,
+    "fiscal_return": 1.033286006854468,
+    "label": "C: Average equip + domestic mfg",
+    "multiplier_adj": 2.630182562902282
+  },
+  "oecd_avg_density": 48.099999999999994
+}

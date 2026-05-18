@@ -1,0 +1,10 @@
+{
+  "n_excl_us": 37,
+  "n_incl_us": 38,
+  "r2_linear_excl_us": 0.4169,
+  "r2_quad_excl_us": 0.4252,
+  "f_excl_us": 0.486,
+  "p_excl_us": 0.4903,
+  "f_incl_us": 13.158,
+  "p_incl_us": 0.0009
+}

@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>入職後初面談</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Serif+JP:wght@400;700&display=swap');
+  :root {
+    --primary: #1a365d; --accent: #2b6cb0; --accent-light: #bee3f8;
+    --bg: #f7fafc; --text: #1a202c; --text-light: #4a5568;
+    --gold: #b7791f; --gold-light: #fefcbf;
+    --green: #276749; --green-light: #c6f6d5;
+    --red: #9b2c2c; --red-light: #fed7d7;
+    --purple: #553c9a; --purple-light: #e9d8fd;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Noto Sans JP',sans-serif; background:#000; overflow:hidden; }
+  .slide { width:100vw; height:100vh; display:none; flex-direction:column; justify-content:center; align-items:center; padding:50px 70px; position:relative; background:var(--bg); }
+  .slide.active { display:flex; }
+
+  /* Title slide */
+  .slide-title { background:linear-gradient(135deg,#1a365d 0%,#2a4a7f 50%,#1a365d 100%); color:#fff; text-align:center; }
+  .slide-title h1 { font-family:'Noto Serif JP',serif; font-size:3.2rem; font-weight:700; letter-spacing:0.15em; margin-bottom:20px; line-height:1.4; }
+  .slide-title .subtitle { font-size:1.3rem; font-weight:300; opacity:0.85; letter-spacing:0.08em; margin-bottom:40px; }
+  .slide-title .date { font-size:1rem; opacity:0.6; letter-spacing:0.1em; }
+  .slide-title .divider { width:120px; height:2px; background:rgba(255,255,255,0.4); margin:28px auto; }
+
+  /* Content slides */
+  .slide-content { align-items:flex-start; }
+  .slide-content h2 { font-family:'Noto Serif JP',serif; font-size:2rem; color:var(--primary); margin-bottom:24px; padding-bottom:12px; border-bottom:3px solid var(--accent); width:100%; letter-spacing:0.05em; }
+  .slide-content .body { width:100%; flex:1; display:flex; flex-direction:column; justify-content:center; }
+
+  /* Bullets */
+  .points { list-style:none; width:100%; }
+  .points li { font-size:1.2rem; line-height:1.6; color:var(--text); padding:8px 0 8px 32px; position:relative; }
+  .points li::before { content:''; position:absolute; left:0; top:18px; width:10px; height:10px; background:var(--accent); border-radius:2px; transform:rotate(45deg); }
+  .points li .sub { font-size:0.95rem; color:var(--text-light); display:block; margin-top:2px; }
+
+  /* Numbered items */
+  .numbered { list-style:none; width:100%; }
+  .numbered li { font-size:1.1rem; line-height:1.6; color:var(--text); padding:6px 0 6px 0; display:flex; gap:12px; align-items:baseline; }
+  .numbered li .num { font-weight:700; color:var(--accent); font-size:0.9rem; min-width:36px; flex-shrink:0; }
+  .numbered li .num.gold { color:var(--gold); }
+  .numbered li .num.green { color:var(--green); }
+  .numbered li .num.purple { color:var(--purple); }
+  .numbered li .num.red { color:var(--red); }
+
+  /* Highlight boxes */
+  .highlight-box { background:#ebf8ff; border-left:5px solid var(--accent); padding:18px 24px; border-radius:0 8px 8px 0; margin:10px 0; width:100%; }
+  .highlight-box.gold { background:var(--gold-light); border-left-color:var(--gold); }
+  .highlight-box.green { background:var(--green-light); border-left-color:var(--green); }
+  .highlight-box.red { background:var(--red-light); border-left-color:var(--red); }
+  .highlight-box.purple { background:var(--purple-light); border-left-color:var(--purple); }
+  .highlight-box p { font-size:1.1rem; line-height:1.6; color:var(--text); }
+  .highlight-box .label { font-weight:700; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px; color:var(--accent); }
+  .highlight-box.gold .label { color:var(--gold); }
+  .highlight-box.green .label { color:var(--green); }
+  .highlight-box.red .label { color:var(--red); }
+  .highlight-box.purple .label { color:var(--purple); }
+
+  /* Two-column */
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:30px; width:100%; }
+  .three-col { display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; width:100%; }
+  .col { background:#fff; border-radius:12px; padding:24px; box-shadow:0 2px 12px rgba(0,0,0,0.06); border:1px solid #e2e8f0; }
+  .col h3 { font-size:1.2rem; color:var(--primary); margin-bottom:12px; padding-bottom:6px; border-bottom:2px solid #e2e8f0; }
+  .col ul { list-style:none; }
+  .col ul li { font-size:1rem; padding:5px 0; color:var(--text); padding-left:18px; position:relative; }
+  .col ul li::before { content:'▸'; position:absolute; left:0; color:var(--accent); }
+
+  /* Tags */
+  .tag { display:inline-block; background:var(--accent); color:#fff; padding:3px 12px; border-radius:20px; font-size:0.8rem; font-weight:500; margin:3px 3px 3px 0; }
+  .tag.gold { background:var(--gold); }
+  .tag.green { background:var(--green); }
+  .tag.purple { background:var(--purple); }
+  .tag.red { background:var(--red); }
+
+  /* Flow diagram */
+  .flow { display:flex; align-items:center; justify-content:center; gap:0; width:100%; margin:16px 0; flex-wrap:wrap; }
+  .flow-item { background:#fff; border:2px solid var(--accent); border-radius:12px; padding:14px 18px; text-align:center; min-width:120px; }
+  .flow-item .flow-title { font-weight:700; font-size:0.95rem; color:var(--primary); margin-bottom:4px; }
+  .flow-item .flow-desc { font-size:0.8rem; color:var(--text-light); }
+  .flow-arrow { font-size:1.8rem; color:var(--accent); padding:0 8px; }
+
+  /* Big quote */
+  .big-quote { font-family:'Noto Serif JP',serif; font-size:2.2rem; color:var(--primary); text-align:center; line-height:1.6; padding:30px; position:relative; }
+  .big-quote::before { content:'"'; font-size:5rem; color:rgba(43,108,176,0.15); position:absolute; top:-15px; left:10px; font-family:serif; }
+
+  /* Image */
+  .slide-img { max-height:280px; border-radius:8px; box-shadow:0 4px 16px rgba(0,0,0,0.15); object-fit:contain; }
+  .img-caption { font-size:0.85rem; color:var(--text-light); text-align:center; margin-top:6px; }
+
+  /* Career flow (horizontal) */
+  .career-flow { display:flex; align-items:stretch; justify-content:center; gap:0; width:100%; margin:20px 0; }
+  .career-step { flex:1; padding:16px 12px; text-align:center; position:relative; border-radius:8px; margin:0 2px; }
+  .career-step .step-num { font-size:0.75rem; font-weight:700; opacity:0.7; margin-bottom:4px; }
+  .career-step .step-title { font-size:1rem; font-weight:700; color:#fff; margin-bottom:4px; }
+  .career-step .step-sub { font-size:0.75rem; color:rgba(255,255,255,0.8); }
+  .career-step.c1 { background:#2b6cb0; }
+  .career-step.c2 { background:#2c7a7b; }
+  .career-step.c3 { background:#276749; }
+  .career-step.c4 { background:#b7791f; }
+  .career-step.c5 { background:#553c9a; }
+  .career-step.c6 { background:#9b2c2c; }
+  .career-step::after { content:'▸'; position:absolute; right:-10px; top:50%; transform:translateY(-50%); font-size:1.2rem; color:var(--text-light); z-index:1; }
+  .career-step:last-child::after { display:none; }
+
+  /* Nav */
+  .nav { position:fixed; bottom:20px; right:28px; display:flex; gap:10px; z-index:100; }
+  .nav button { width:44px; height:44px; border:none; border-radius:50%; background:var(--primary); color:#fff; font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-shadow:0 2px 8px rgba(0,0,0,0.2); }
+  .nav button:hover { background:var(--accent); transform:scale(1.1); }
+  .nav button:disabled { opacity:0.3; cursor:default; transform:none; }
+  .page-num { position:fixed; bottom:28px; left:28px; font-size:0.85rem; color:var(--text-light); z-index:100; background:rgba(255,255,255,0.9); padding:3px 14px; border-radius:20px; }
+
+  /* End slide */
+  .slide-end { background:linear-gradient(135deg,#1a365d 0%,#2a4a7f 100%); color:#fff; text-align:center; }
+  .slide-end h2 { font-family:'Noto Serif JP',serif; font-size:2.6rem; border:none; color:#fff; margin-bottom:20px; }
+
+  /* Emphasis */
+  em { color:var(--accent); font-style:normal; font-weight:700; }
+  .gold-em { color:var(--gold); font-weight:700; }
+  .green-em { color:var(--green); font-weight:700; }
+  .red-em { color:var(--red); font-weight:700; }
+  .purple-em { color:var(--purple); font-weight:700; }
+
+  /* Animation */
+  @keyframes fadeInUp { from{opacity:0;transform:translateY(25px);} to{opacity:1;transform:translateY(0);} }
+  .slide.active .animate { animation:fadeInUp 0.5s ease-out forwards; }
+  .slide.active .animate.d1{animation-delay:0.1s;opacity:0;}
+  .slide.active .animate.d2{animation-delay:0.2s;opacity:0;}
+  .slide.active .animate.d3{animation-delay:0.35s;opacity:0;}
+  .slide.active .animate.d4{animation-delay:0.5s;opacity:0;}
+  .slide.active .animate.d5{animation-delay:0.65s;opacity:0;}
+
+  /* Compact text for dense slides */
+  .compact .points li { font-size:1.05rem; padding:5px 0 5px 28px; }
+  .compact .points li::before { top:14px; width:8px; height:8px; }
+</style>
+</head>
+<body>
+
+<!-- ===== 1. Title ===== -->
+<div class="slide slide-title active">
+  <h1 class="animate d1">入職後初面談</h1>
+  <div class="divider animate d2"></div>
+  <p class="subtitle animate d3">キャリア・研究ビジョン・産学連携のご共有</p>
+  <p class="date animate d4">2026年5月15日</p>
+</div>
+
+<!-- ===== 2. Agenda ===== -->
+<div class="slide slide-content">
+  <h2 class="animate d1">本日のアジェンダ</h2>
+  <div class="body">
+    <ul class="points">
+      <li class="animate d1">キャリア概要 — 医学部→麻酔科→医工連携→公衆衛生→起業→DS</li>
+      <li class="animate d2">麻酔科臨床期のハイライト</li>
+      <li class="animate d2">医工連携・公衆衛生・国際連携</li>
+      <li class="animate d3">データサイエンティストとしての現在</li>
+      <li class="animate d3">研究ビジョン — データ上流への遡行</li>
+      <li class="animate d4">Devin × 伊藤忠 × 滋賀大学</li>
+      <li class="animate d4">産学連携 — シフト最適化・学術支援・論文ダッシュボード</li>
+      <li class="animate d5">法人補助金の大学還流モデル</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===== 3. Career Overview ===== -->
+<div class="slide slide-content">
+  <h2 class="animate d1">キャリア概要</h2>
+  <div class="body">
+    <div class="career-flow animate d2">
+      <div class="career-step c1">
+        <div class="step-num">Phase 1</div>
+        <div class="step-title">医学部<br>麻酔科臨床</div>
+        <div class="step-sub">1-1 〜 1-5</div>
+      </div>
+      <div class="career-step c2">
+        <div class="step-num">Phase 2</div>
+        <div class="step-title">医工連携</div>
+        <div class="step-sub">2-1 〜 2-3</div>
+      </div>
+      <div class="career-step c3">
+        <div class="step-num">Phase 3</div>
+        <div class="step-title">公衆衛生<br>学位取得</div>
+        <div class="step-sub">3-1 〜 3-3</div>
+      </div>
+      <div class="career-step c4">
+        <div class="step-num">Phase 4</div>
+        <div class="step-title">起業<br>国際連携</div>
+        <div class="step-sub">4-1 〜 4-6</div>
+      </div>
+      <div class="career-step c5">
+        <div class="step-num">Phase 5</div>
+        <div class="step-title">データ<br>サイエンティスト</div>
+        <div class="step-sub">5-1 〜 5-5</div>
+      </div>
+    </div>
+
+    <div class="two-col animate d3" style="margin-top:20px;">
+      <div class="highlight-box">
+        <div class="label">専門</div>
+        <p style="font-size:1.4rem;font-weight:700;color:var(--primary);">「好奇心」</p>
+      </div>
+      <div class="highlight-box gold">
+        <div class="label">座右の銘</div>
+        <p>「<span class="gold-em">大隠朝市</span>」<br>「どこかの分野で未解決の課題は<br>　他の分野では90%解決されている」</p>
+      </div>
+    </div>
+
+    <div class="highlight-box purple animate d4" style="margin-top:12px;">
+      <div class="label">研究者としての目標</div>
+      <p style="font-size:1.3rem;"><span class="purple-em">蝋人形になること</span> — 後世に残る研究業績を確立し、不朽の存在として認知される</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 4. Phase 1: Anesthesiology ===== -->
+<div class="slide slide-content">
+  <h2 class="animate d1">Phase 1：麻酔科臨床期</h2>
+  <div class="body">
+    <div style="display:grid; grid-template-columns:1fr 300px; gap:30px;">
+      <div>
+        <ul class="numbered animate d2">
+          <li><span class="num">1-1</span><span>医学部卒業・麻酔科入局</span></li>
+          <li><span class="num">1-2</span><span><em>東京都立墨東病院</em>（三次救命救急）麻酔科に勤務。のべ200〜300名の医師の中で、<strong>「他の医師に手に負えない症例は知識も技術も大西を呼ぶ」</strong>というルールが存在</span></li>
+          <li><span class="num">1-3</span><span>酒井哲郎先生の著書で<em>「東京の市中病院にいる天才麻酔科医」</em>として紹介される</span></li>
+          <li><span class="num">1-4</span><span><em>天野篤先生</em>（上皇の執刀医）からお見合いを紹介されるほど気に入られる</span></li>
+          <li><span class="num">1-5</span><span>麻酔科でしたいことは<strong>全て終えて「卒業」</strong></span></li>
+        </ul>
+      </div>
+      <div class="animate d3" style="text-align:center;">
+        <img src="book_cover.png" class="slide-img" style="max-height:320px;">
+        <div class="img-caption">シリーズ日米医学交流 No.12<br>酒井先生パートに紹介あり</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 5. Phase 1 continued: Book quote ===== -->
+<div class="slide slide-content">
+  <h2 class="animate d1">Phase 1：「天才麻酔科医」の紹介</h2>
+  <div class="body" style="align-items:center;">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:30px; width:100%;">
+      <div class="animate d2" style="text-align:center;">
+        <img src="book_page.jpg" class="slide-img" style="max-height:400px; max-width:100%;">
+        <div class="img-caption">酒井先生パート — 本文</div>
+      </div>
+      <div class="animate d3">
+        <div class="highlight-box" style="margin-top:20px;">
+          <div class="label">書籍より引用</div>
+          <p>「例えば東京の市中病院で働く<em>天才麻酔科医</em>はおるのだが…」<br><br>
+          — 酒井哲郎先生<br>
+          『麻酔科診療にみる医学留学へのパスポート』<br>
+          公益財団法人 日米医学医療交流財団 編</p>
+        </div>
+        <div class="highlight-box gold" style="margin-top:12px;">
+          <div class="label">天野篤先生との関係</div>
+          <p><em>天野篤先生</em>（上皇の心臓バイパス手術執刀医）から<strong>お見合いを紹介される</strong>ほどの信頼関係</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 6. Phase 2: Medical Engineering ===== -->
+<div class="slide slide-content">
+  <h2 class="animate d1">Phase 2：医工連携期</h2>
+  <div class="body">
+    <ul class="numbered animate d2">
+      <li><span class="num" style="color:#2c7a7b;">2-1</span><span>墨東病院在籍中、<em>市中病院と医学部を持たない工学部</em>での医工連携に着手</span></li>
+      <li><span class="num" style="color:#2c7a7b;">2-2</span><span>全身麻酔の機序研究 — <em>京都工業繊維大学</em>（医学部なし）の論文が確信に最も近い</span></li>
+      <li><span class="num" style="color:#2c7a7b;">2-3</span><span>生成AI前のプログラミングコンペティション受賞歴 → <em>コーディング能力の客観的証明</em></span></li>
+    </ul>
+
+    <div class="highlight-box animate d3" style="margin-top:24px;">
+      <div class="label">麻酔科の特異性</div>
+      <p>全身麻酔が効く仕組みには十分な科学的根拠がまだない。<br>
+      医学部を持たない<em>京都工業繊維大学</em>の研究が最も核心に迫っている — <br>
+      分野横断的アプローチの重要性を示す好例</p>
+    </div>
+
+    <div class="two-col animate d4" style="margin-top:20px;">
+      <div class="col">
+        <h3>臨床面の特徴</h3>
+        <ul>
+          <li>リアルタイム生体モニターデータ</li>
+          <li>PK/PDモデリングとの親和性</li>
+          <li>手術スケジュールの複雑な最適化</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3>研究面の特徴</h3>
+        <ul>
+          <li>数理モデル・シミュレーション需要大</li>
+          <li>多変量時系列データの宝庫</li>
+          <li>シフト制勤務 → 最適化問題と直結</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 7. Phase 3: Public Health / PhD ===== -->
+<div class="slide slide-content">
+  <h2 class="animate d1">Phase 3：公衆衛生・学位取得期</h2>
+  <div class="body">
+    <ul class="numbered animate d2">
+      <li><span class="num green">3-1</span><span><em>滋賀医科大学</em>で感染症論文により学位（博士号）取得<span class="sub">生成AIのない時代に執筆。最近ChatGPTにコード改善を依頼したところ、デュアルユースを疑われて拒否された</span></span></li>
+      <li><span class="num green">3-2</span><span>学位の縁で<em>滋賀医科大学 救急集中治療講座 非常勤助教</em>に就任</span></li>
+      <li><span class="num green">3-3</span><span>医療の (not so) big data を使った研究支援を推進したい<span class="sub">ドメイン知識を使って<em>滋賀大学と滋賀医科大学の間の通訳</em>を果たす</span></span></li>
+    </ul>
+
+    <div class="highlight-box green animate d3" style="margin-top:20px;">
+      <div class="label">通訳者としての役割</div>
+      <p>データサイエンス（滋賀大学）× 臨床医学（滋賀医科大学）<br>
+      両大学の間で<em>ドメイン知識による橋渡し</em>ができる稀有なポジション</p>
+    </div>
+
+    <div class="highlight-box animate d4" style="margin-top:12px;">
+      <div class="label">倫理と研究加速</div>
+      <p>研究において倫理は<em>再現性のパーツ</em>であるに過ぎないのに過大視されている。<br>
+      <strong>オープンデータ</strong>を活用して研究を加速させるほうが生産的</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 8. Phase 4: Venture / International ===== -->
+<div class="slide slide-content">
+  <h2 class="animate d1">Phase 4：起業・国際連携期</h2>
+  <div class="body">
+    <ul class="numbered animate d2">
+      <li><span class="num gold">4-1</span><span>スリランカとの<em>SATREPS</em>計画 — 3年越しでスリランカ側が書類を作成できず頓挫<span class="sub">現地JICAにも連絡を絶たれた。一方、国内では<em>文科省・前スリランカ大使・SATREPS発案者</em>と知己を得た</span></span></li>
+      <li><span class="num gold">4-2</span><span><em>成育医療研究センター</em>との共同研究 — まさかの成育側の倫理審査が未了というサプライズ</span></li>
+      <li><span class="num gold">4-3</span><span>シフト作成の最適化（数値最適化） — <em>導入実績あり</em></span></li>
+      <li><span class="num gold">4-4</span><span>学術支援サービス — <em>導入実績あり</em></span></li>
+      <li><span class="num gold">4-5</span><span>大学発ベンチャー<em>法人補助金の大学還流モデル</em>構想</span></li>
+      <li><span class="num gold">4-6</span><span>産学連携 — シフト最適化・学術支援の<em>展開</em></span></li>
+    </ul>
+
+    <div class="highlight-box red animate d3" style="margin-top:20px;">
+      <div class="label">教訓</div>
+      <p>国際連携は相手側の事務能力に大きく依存する。国内でのネットワーク構築は成果として残る。<br>
+      倫理審査の未了は共同研究における予測困難なリスク。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 9. Phase 5: Data Scientist ===== -->
+<div class="slide slide-content">
+  <h2 class="animate d1">Phase 5：データサイエンティスト期（現在）</h2>
+  <div class="body">
+    <ul class="numbered animate d2">
+      <li><span class="num purple">5-1</span><span><em>滋賀大学</em>にデータサイエンティストとして入職</span></li>
+      <li><span class="num purple">5-2</span><span><em>hikone</em> — 独自の因果推論手法論文を執筆、<em>JMLR</em>に投稿中</span></li>
+      <li><span class="num purple">5-3</span><span><em>論文を100本</em>書いてもいいですか？</span></li>
+      <li><span class="num purple">5-4</span><span>論文管理ダッシュボードを自作 → センターのプロジェクト管理にも活用</span></li>
+      <li><span class="num purple">5-5</span><span>Devin × 伊藤忠 × 滋賀大学 — AI支援の大学導入提案</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===== 10. Research Vision ===== -->
+<div class="slide slide-content">
+  <h2 class="animate d1">研究ビジョン — データの上流へ</h2>
+  <div class="body">
+    <div class="flow animate d2">
+      <div class="flow-item" style="border-color:var(--accent);">
+        <div class="flow-title">医学</div>
+        <div class="flow-desc">エビデンスを<br><strong>使う</strong>立場</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-item" style="border-color:var(--green);">
+        <div class="flow-title">公衆衛生</div>
+        <div class="flow-desc">手法を<br><strong>使う</strong>立場</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-item" style="border-color:var(--purple);">
+        <div class="flow-title">DS・統計学</div>
+        <div class="flow-desc">手法を<br><strong>つくる</strong>立場</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-item" style="border-color:var(--gold);background:var(--gold-light);">
+        <div class="flow-title">hikone</div>
+        <div class="flow-desc">因果推論手法<br>JMLR投稿中</div>
+      </div>
+    </div>
+
+    <div class="two-col animate d3" style="margin-top:16px;">
+      <div class="highlight-box">
+        <div class="label">データの下流＝医学の強み</div>
+        <p>医学はデータの下流ではあるが、少なくとも本人のプラクティスは変わるので<em>必ず社会実装される</em></p>
+      </div>
+      <div class="highlight-box gold">
+        <div class="label">エビデンスの階梯への異論</div>
+        <p>エビデンスの階梯は誤解されている。<br><em>ケースリポートはRCTに劣らない</em></p>
+      </div>
+    </div>
+
+    <div class="highlight-box purple animate d4" style="margin-top:12px;">
+      <div class="label">戦略</div>
+      <p>データの上流に遡ってキャリアを積み、<em>手法をつくる側</em>へ。<br>
+      同時に臨床経験に基づく<em>社会実装力</em>を武器に、研究と実践の両輪を回す。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 11. Coding Ability ===== -->
+<div class="slide slide-content">
+  <h2 class="animate d1">コーディング能力の証明</h2>
+  <div class="body">
+    <div class="highlight-box animate d2">
+      <div class="label">課題認識</div>
+      <p>生成AI時代においてはコード能力の客観的評価が困難に</p>
+    </div>
+    <div class="highlight-box green animate d3">
+      <div class="label">強み</div>
+      <p><em>生成AI登場以前</em>のプログラミングコンペティションにおける受賞歴あり<br>
+      → コーディング能力、および<em>コードレビュー能力</em>の客観的裏付け</p>
+    </div>
+    <div style="margin-top:16px;" class="animate d4">
+      <span class="tag">数値最適化</span>
+      <span class="tag">統計モデリング</span>
+      <span class="tag">コードレビュー</span>
+      <span class="tag green">AI前受賞実績</span>
+      <span class="tag purple">因果推論</span>
+      <span class="tag gold">論文ダッシュボード</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 12. Devin × Itochu × Shiga ===== -->
+<div class="slide slide-content">
+  <h2 class="animate d1">Devin × 伊藤忠 × 滋賀大学</h2>
+  <div class="body">
+    <div class="flow animate d2">
+      <div class="flow-item">
+        <div class="flow-title">Cognition AI</div>
+        <div class="flow-desc">Devin 開発元</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-item" style="border-color:var(--gold);">
+        <div class="flow-title">伊藤忠テクノソリューションズ</div>
+        <div class="flow-desc">日本代理店</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-item" style="border-color:var(--green);">
+        <div class="flow-title">滋賀大学</div>
+        <div class="flow-desc">伊藤忠と縁あり</div>
+      </div>
+    </div>
+    <div class="highlight-box gold animate d3">
+      <div class="label">提案</div>
+      <p>伊藤忠が日本におけるDevin代理店となった今、<em>滋賀大学でのDevin導入</em>を検討できないか？</p>
+    </div>
+    <ul class="points animate d4">
+      <li>AI駆動型ソフトウェアエンジニアリングによる研究加速<span class="sub">コーディング、データ分析、論文整備の自動化</span></li>
+      <li>大学全体のDX推進の先行事例になり得る</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===== 13. Subsidy Model ===== -->
+<div class="slide slide-content">
+  <h2 class="animate d1">法人補助金の大学還流モデル</h2>
+  <div class="body">
+    <div class="flow animate d2">
+      <div class="flow-item" style="border-color:var(--green);">
+        <div class="flow-title">大学発ベンチャー</div>
+        <div class="flow-desc">技術・知見の事業化</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-item" style="border-color:var(--gold);">
+        <div class="flow-title">法人補助金取得</div>
+        <div class="flow-desc">公的資金の獲得</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-item" style="border-color:var(--accent);">
+        <div class="flow-title">大学への還流</div>
+        <div class="flow-desc">研究基盤の強化</div>
+      </div>
+    </div>
+    <div class="highlight-box gold animate d3">
+      <div class="label">ビジョン</div>
+      <p>大学発ベンチャーが獲得した法人補助金を<span class="gold-em">大学の研究基盤に還流させるサステナブルなモデル</span>を構築</p>
+    </div>
+    <ul class="points animate d4">
+      <li>産学連携の成果を大学運営に直接貢献させる仕組み</li>
+      <li>ベンチャー → 補助金 → 大学 の好循環サイクル</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===== 14. Industry-Academia ===== -->
+<div class="slide slide-content">
+  <h2 class="animate d1">産学連携の展開</h2>
+  <div class="body">
+    <div class="three-col">
+      <div class="col animate d2" style="border-left:5px solid var(--accent);">
+        <h3>シフト作成の最適化</h3>
+        <ul>
+          <li><strong>手法：</strong>数値最適化</li>
+          <li><strong>実績：</strong>導入済 ✓</li>
+          <li>公平性・連続勤務制限</li>
+          <li>コスト削減 + 満足度両立</li>
+        </ul>
+        <div style="margin-top:8px;"><span class="tag">最適化</span><span class="tag">OR</span></div>
+      </div>
+      <div class="col animate d3" style="border-left:5px solid var(--green);">
+        <h3>学術支援</h3>
+        <ul>
+          <li><strong>実績：</strong>導入済 ✓</li>
+          <li>論文執筆・データ解析</li>
+          <li>統計コンサルティング</li>
+          <li>研究デザイン助言</li>
+        </ul>
+        <div style="margin-top:8px;"><span class="tag green">統計</span><span class="tag green">論文支援</span></div>
+      </div>
+      <div class="col animate d4" style="border-left:5px solid var(--purple);">
+        <h3>論文ダッシュボード</h3>
+        <ul>
+          <li>論文管理用に自作</li>
+          <li>センターの<br>プロジェクト管理に活用</li>
+          <li><strong>目標：論文100本</strong></li>
+        </ul>
+        <div style="margin-top:8px;"><span class="tag purple">管理ツール</span></div>
+      </div>
+    </div>
+    <div class="highlight-box green animate d5" style="margin-top:16px;">
+      <div class="label">目標</div>
+      <p>導入実績のある<em>シフト最適化・学術支援</em>を基盤に学内外へ展開。論文ダッシュボードでセンター業務を効率化。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 15. Research Policy ===== -->
+<div class="slide slide-content">
+  <h2 class="animate d1">研究上の方針</h2>
+  <div class="body">
+    <div class="highlight-box red animate d2">
+      <div class="label">留意事項</div>
+      <p>特定の研究者（佐藤俊哉氏）との共同研究は<span class="red-em">行わない</span>方針</p>
+    </div>
+    <ul class="points animate d3">
+      <li>独自の研究ラインを確立・維持する<span class="sub">研究の独立性と方向性を自ら決定</span></li>
+      <li>共同研究は研究ビジョンが合致する相手と進める<span class="sub">相互補完的で建設的なパートナーシップを重視</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===== 16. Summary ===== -->
+<div class="slide slide-end">
+  <h2 class="animate d1">まとめ</h2>
+  <div class="divider animate d2" style="width:120px;height:2px;background:rgba(255,255,255,0.4);margin:24px auto;"></div>
+  <div class="animate d3" style="text-align:left;max-width:700px;">
+    <ul class="points" style="color:#fff;">
+      <li style="color:rgba(255,255,255,0.9);">医学部→麻酔科→医工連携→公衆衛生→起業→DSのキャリア遷移</li>
+      <li style="color:rgba(255,255,255,0.9);">墨東病院「天才麻酔科医」— 麻酔科を卒業して新たな挑戦へ</li>
+      <li style="color:rgba(255,255,255,0.9);">データの上流に遡り手法をつくる側へ（hikone → JMLR）</li>
+      <li style="color:rgba(255,255,255,0.9);">滋賀大学 × 滋賀医科大学のドメイン知識通訳</li>
+      <li style="color:rgba(255,255,255,0.9);">Devin導入・法人補助金還流・シフト最適化・学術支援</li>
+      <li style="color:rgba(255,255,255,0.9);">論文100本を目標に、蝋人形を目指す</li>
+    </ul>
+  </div>
+  <p class="animate d4" style="margin-top:36px;opacity:0.7;">ご清聴ありがとうございました</p>
+</div>
+
+<!-- Navigation -->
+<div class="nav">
+  <button id="prevBtn" onclick="changeSlide(-1)">◀</button>
+  <button id="nextBtn" onclick="changeSlide(1)">▶</button>
+</div>
+<div class="page-num" id="pageNum"></div>
+
+<script>
+  let current=0;
+  const slides=document.querySelectorAll('.slide');
+  const total=slides.length;
+  function showSlide(n){slides.forEach(s=>s.classList.remove('active'));slides[n].classList.add('active');document.getElementById('pageNum').textContent=`${n+1} / ${total}`;document.getElementById('prevBtn').disabled=(n===0);document.getElementById('nextBtn').disabled=(n===total-1);}
+  function changeSlide(dir){const next=current+dir;if(next>=0&&next<total){current=next;showSlide(current);}}
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '){e.preventDefault();changeSlide(1);}if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();changeSlide(-1);}if(e.key==='Home'){current=0;showSlide(current);}if(e.key==='End'){current=total-1;showSlide(current);}});
+  showSlide(0);
+</script>
+</body>
+</html>
